@@ -1,0 +1,37 @@
+{
+  "name": "anime-graphql-api-apollo-postgraphile",
+  "version": "1.0.0",
+  "description": "anime-graphql-api-apollo-postgraphile",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "@typescript-eslint/parser": "^2.34.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-config-airbnb-typescript": "^7.2.1",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-prettier": "^3.1.3",
+    "nodemon": "^2.0.4",
+    "prettier": "^2.0.5",
+    "ts-node": "^8.10.1",
+    "typescript": "^3.9.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node a.ts",
+    "dev": "nodemon",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Maxime-Fleurant/anime-graphql-api-apollo-postgraphile.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Maxime-Fleurant/anime-graphql-api-apollo-postgraphile/issues"
+  },
+  "homepage": "https://github.com/Maxime-Fleurant/anime-graphql-api-apollo-postgraphile#readme"
+}
