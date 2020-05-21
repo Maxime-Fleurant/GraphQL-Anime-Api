@@ -1,0 +1,14 @@
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, OneToMany } from 'typeorm';
+import { Anime } from './anime';
+
+@Entity()
+export class Studio extends BaseEntity {
+  @PrimaryGeneratedColumn({ type: 'bigint' })
+  id: number;
+
+  @Column()
+  name: string;
+
+  @OneToMany(() => Anime, (anime) => anime.studio)
+  animes: Anime[];
+}

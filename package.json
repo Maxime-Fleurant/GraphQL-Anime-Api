@@ -3,8 +3,18 @@
   "version": "1.0.0",
   "description": "anime-graphql-api-apollo-postgraphile",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "@graphql-modules/core": "^0.7.17",
+    "apollo-server-express": "^2.13.1",
+    "express": "^4.17.1",
+    "pg": "^8.2.1",
+    "reflect-metadata": "^0.1.13",
+    "type-graphql": "^1.0.0-rc.2",
+    "typeorm": "^0.2.25"
+  },
   "devDependencies": {
+    "@types/express": "^4.17.6",
+    "@types/node": "^14.0.4",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
     "eslint": "^6.8.0",
@@ -20,7 +30,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node a.ts",
+    "start": "ts-node index.ts",
     "dev": "nodemon",
     "build": "tsc"
   },

@@ -1,0 +1,10 @@
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432,
+  "username": "anidb",
+  "password": "test123",
+  "database": "anidb",
+  "synchronize": true,
+  "entities": ["./models/*.ts"]
+}
