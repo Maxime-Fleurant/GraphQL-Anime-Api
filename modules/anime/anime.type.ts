@@ -9,9 +9,9 @@ import {
   JoinTable,
 } from 'typeorm';
 import { ObjectType, Field, ID } from 'type-graphql';
-import { Studio } from './studio';
-import { Character } from './character';
-import { Genre } from './genre';
+import { Studio } from '../studio/studio.type';
+import { Genre } from '../genre/genre.type';
+import { Character } from '../character/character.type';
 
 @ObjectType()
 @Entity()
@@ -24,15 +24,12 @@ export class Anime extends BaseEntity {
   @Column()
   title: string;
 
-  @Field((type) => Studio)
   @ManyToOne(() => Studio, (studio) => studio.animes)
   studio: Studio;
 
-  @Field((type) => [Character])
   @OneToMany(() => Character, (character) => character.anime)
   characters: Character[];
 
-  @Field((type) => [Genre])
   @ManyToMany(() => Genre, (genre) => genre.animes)
   @JoinTable()
   genres: Genre[];

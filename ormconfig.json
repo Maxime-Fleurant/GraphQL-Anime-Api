@@ -6,5 +6,5 @@
   "password": "test123",
   "database": "anidb",
   "synchronize": true,
-  "entities": ["./models/*.ts"]
+  "entities": ["./modules/**/*.type.ts"]
 }

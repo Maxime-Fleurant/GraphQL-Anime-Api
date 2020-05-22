@@ -1,35 +1,28 @@
 import 'reflect-metadata';
 
 import express from 'express';
-import { ApolloServer, gql } from 'apollo-server-express';
 import { createConnection } from 'typeorm';
-import { Anime } from './models/anime';
+import { ApolloServer } from 'apollo-server-express';
+import { GraphQLModule } from '@graphql-modules/core';
+import { AnimeModule } from './modules/anime';
+import { Anime } from './modules/anime/anime.type';
 
 const start = async () => {
-  const connection = await createConnection();
-
-  const newAnime = new Anime();
-
-  const typeDefs = gql`
-    type Query {
-      hello: String
-    }
-  `;
-
-  const resolvers = {
-    Query: {
-      hello: () => 'Hello world!',
-    },
-  };
-
-  const server = new ApolloServer({ typeDefs, resolvers });
-
   const app = express();
-  server.applyMiddleware({ app });
 
-  app.listen({ port: 4000 }, () =>
-    console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
-  );
+  await createConnection();
+  console.log(await Anime.find());
+  const { schema } = new GraphQLModule({
+    imports: [AnimeModule],
+  });
+
+  const apolloServer = new ApolloServer({
+    schema,
+  });
+
+  apolloServer.applyMiddleware({ app });
+
+  app.listen({ port: 4000 }, () => console.log(`🚀 Server ready at http://localhost:4000`));
 };
 
 start();

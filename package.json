@@ -5,8 +5,10 @@
   "main": "index.js",
   "dependencies": {
     "@graphql-modules/core": "^0.7.17",
+    "@graphql-modules/di": "^0.7.17",
     "apollo-server-express": "^2.13.1",
     "express": "^4.17.1",
+    "graphql": "^15.0.0",
     "pg": "^8.2.1",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.0.0-rc.2",

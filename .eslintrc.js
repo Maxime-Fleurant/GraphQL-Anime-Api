@@ -18,5 +18,7 @@ module.exports = {
     'import/prefer-default-export': 'off',
     'import/extensions': 'off',
     'import/no-cycle': 'off',
+    'class-methods-use-this': 'off',
+    'no-useless-constructor': 'off',
   },
 };

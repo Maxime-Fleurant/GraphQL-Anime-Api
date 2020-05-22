@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, OneToMany } from 'typeorm';
-import { Anime } from './anime';
+import { Anime } from '../anime/anime.type';
 
 @Entity()
 export class Studio extends BaseEntity {
