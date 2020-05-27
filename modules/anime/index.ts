@@ -1,5 +1,6 @@
 import { GraphQLModule } from '@graphql-modules/core';
 import { buildSchemaSync } from 'type-graphql';
+import { getCustomRepository } from 'typeorm';
 import { AnimeResolver } from './anime.resolver';
 import { AnimeRepository } from './anime.repository';
 

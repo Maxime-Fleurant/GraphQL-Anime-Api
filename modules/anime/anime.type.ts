@@ -7,6 +7,7 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
+  RelationId,
 } from 'typeorm';
 import { ObjectType, Field, ID } from 'type-graphql';
 import { Studio } from '../studio/studio.type';
@@ -16,7 +17,7 @@ import { Character } from '../character/character.type';
 @ObjectType()
 @Entity()
 export class Anime extends BaseEntity {
-  @Field((type) => ID)
+  @Field(() => ID)
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number;
 
@@ -24,12 +25,26 @@ export class Anime extends BaseEntity {
   @Column()
   title: string;
 
-  @ManyToOne(() => Studio, (studio) => studio.animes)
+  @Field()
+  @Column({ enum: ['ANIME', 'MANGA'] })
+  type: string;
+
+  @Field()
+  @Column({ type: 'text' })
+  desciption: string;
+
+  @Field(() => Studio)
+  @ManyToOne(() => Studio, (studio) => studio.animes, { onDelete: 'SET NULL', nullable: false })
   studio: Studio;
 
+  @RelationId((anime: Anime) => anime.studio)
+  studioId: number;
+
+  @Field(() => [Character])
   @OneToMany(() => Character, (character) => character.anime)
   characters: Character[];
 
+  @Field(() => [Genre])
   @ManyToMany(() => Genre, (genre) => genre.animes)
   @JoinTable()
   genres: Genre[];

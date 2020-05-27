@@ -1,19 +1,25 @@
 import 'reflect-metadata';
 
 import express from 'express';
-import { createConnection } from 'typeorm';
+import { createConnection, useContainer } from 'typeorm';
 import { ApolloServer } from 'apollo-server-express';
-import { GraphQLModule } from '@graphql-modules/core';
-import { AnimeModule } from './modules/anime';
-import { Anime } from './modules/anime/anime.type';
+import { buildSchemaSync } from 'type-graphql';
+import { Container } from 'typedi';
+import { AnimeResolver } from './modules/anime/anime.resolver';
+import { CharacterResolver } from './modules/character/character.resolver';
+import { StudioResolver } from './modules/studio/studio.resolver';
+import { GenreResolver } from './modules/genre/genre.resolver';
+
+useContainer(Container);
 
 const start = async () => {
   const app = express();
 
   await createConnection();
-  console.log(await Anime.find());
-  const { schema } = new GraphQLModule({
-    imports: [AnimeModule],
+
+  const schema = buildSchemaSync({
+    resolvers: [AnimeResolver, CharacterResolver, StudioResolver, GenreResolver],
+    container: Container,
   });
 
   const apolloServer = new ApolloServer({
