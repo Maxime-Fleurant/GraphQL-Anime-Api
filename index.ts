@@ -12,7 +12,7 @@ import { GenreResolver } from './modules/genre/genre.resolver';
 
 useContainer(Container);
 
-const start = async () => {
+const start = async (): Promise<void> => {
   const app = express();
 
   await createConnection();

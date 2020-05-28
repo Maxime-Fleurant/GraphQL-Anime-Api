@@ -20,5 +20,6 @@ module.exports = {
     'import/no-cycle': 'off',
     'class-methods-use-this': 'off',
     'no-useless-constructor': 'off',
+    'max-classes-per-file': 'off',
   },
 };

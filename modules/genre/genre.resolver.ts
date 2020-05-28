@@ -14,7 +14,7 @@ export class GenreResolver {
   }
 
   @Query(() => Genre)
-  async genre(@Arg('id') id: string): Promise<Genre> {
+  async genre(@Arg('id') id: string): Promise<Genre | undefined> {
     return this.genreRepository.findOne(id);
   }
 

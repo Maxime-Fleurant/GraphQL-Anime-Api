@@ -26,10 +26,6 @@ export class Anime extends BaseEntity {
   title: string;
 
   @Field()
-  @Column({ enum: ['ANIME', 'MANGA'] })
-  type: string;
-
-  @Field()
   @Column({ type: 'text' })
   desciption: string;
 
@@ -41,7 +37,7 @@ export class Anime extends BaseEntity {
   studioId: number;
 
   @Field(() => [Character])
-  @OneToMany(() => Character, (character) => character.anime)
+  @OneToMany(() => Character, (character) => character.anime, { cascade: true })
   characters: Character[];
 
   @Field(() => [Genre])

@@ -3,6 +3,7 @@
   "compilerOptions": {
     "strictPropertyInitialization": false,
     "target": "es2018",
+    "strict": true,
     "module": "commonjs",
     "types": ["reflect-metadata"],
     "lib": ["es2018", "esnext.asynciterable"],
