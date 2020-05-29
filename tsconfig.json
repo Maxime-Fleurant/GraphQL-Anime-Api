@@ -6,7 +6,7 @@
     "strict": true,
     "module": "commonjs",
     "types": ["reflect-metadata"],
-    "lib": ["es2018", "esnext.asynciterable"],
+    "lib": ["es2018", "esnext.asynciterable", "DOM"],
     "outDir": "./dist",
     "rootDir": "./",
     "esModuleInterop": true,

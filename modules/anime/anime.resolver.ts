@@ -1,12 +1,16 @@
-import { Resolver, Query, Arg, FieldResolver, Root, Mutation, Args } from 'type-graphql';
+import { Resolver, Query, Arg, FieldResolver, Root, Mutation, Ctx } from 'type-graphql';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Repository } from 'typeorm';
+import { Inject } from 'typedi';
+
 import { Anime } from './anime.type';
 import { Character } from '../character/character.type';
 import { Studio } from '../studio/studio.type';
 import { Genre } from '../genre/genre.type';
 import { AnimeInput, UpdateAnimeInput } from './types/anime-input';
 import { BaseCharacterInput } from '../character/types/character-input';
+import { IContext } from '../..';
+import { Class1 } from '../../test';
 
 @Resolver(() => Anime)
 export class AnimeResolver {
@@ -16,6 +20,9 @@ export class AnimeResolver {
     @InjectRepository(Studio) private studioRepository: Repository<Studio>
   ) {}
 
+  @Inject()
+  test: Class1;
+
   @Query(() => [Anime])
   async animes(): Promise<Anime[]> {
     const animes = await this.animeRepository.find();
@@ -24,7 +31,8 @@ export class AnimeResolver {
   }
 
   @Query(() => Anime)
-  async anime(@Arg('id') id: string): Promise<Anime | undefined> {
+  async anime(@Arg('id') id: string, @Ctx() context: IContext): Promise<Anime | undefined> {
+    console.log(this.test);
     const anime = await this.animeRepository.findOne(id);
 
     return anime;
