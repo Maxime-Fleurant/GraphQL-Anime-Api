@@ -15,13 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const type_graphql_1 = require("type-graphql");
 const typeorm_typedi_extensions_1 = require("typeorm-typedi-extensions");
 const typeorm_1 = require("typeorm");
-const typedi_1 = require("typedi");
 const anime_type_1 = require("./anime.type");
 const character_type_1 = require("../character/character.type");
 const studio_type_1 = require("../studio/studio.type");
 const anime_input_1 = require("./types/anime-input");
 const character_input_1 = require("../character/types/character-input");
-const test_1 = require("../../test");
 let AnimeResolver = class AnimeResolver {
     constructor(animeRepository, characterRepository, studioRepository) {
         this.animeRepository = animeRepository;
@@ -33,7 +31,6 @@ let AnimeResolver = class AnimeResolver {
         return animes;
     }
     async anime(id) {
-        console.log(this.test);
         const anime = await this.animeRepository.findOne(id);
         return anime;
     }
@@ -96,10 +93,6 @@ let AnimeResolver = class AnimeResolver {
         return 'deleted';
     }
 };
-__decorate([
-    typedi_1.Inject(),
-    __metadata("design:type", test_1.Class1)
-], AnimeResolver.prototype, "test", void 0);
 __decorate([
     type_graphql_1.Query(() => [anime_type_1.Anime]),
     __metadata("design:type", Function),

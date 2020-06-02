@@ -10,10 +10,10 @@ const dataloader_1 = __importDefault(require("dataloader"));
 const apollo_server_express_1 = require("apollo-server-express");
 const type_graphql_1 = require("type-graphql");
 const typedi_1 = require("typedi");
-const anime_resolver_1 = require("./modules/anime/anime.resolver");
-const character_resolver_1 = require("./modules/character/character.resolver");
-const studio_resolver_1 = require("./modules/studio/studio.resolver");
-const genre_resolver_1 = require("./modules/genre/genre.resolver");
+const anime_resolver_1 = require("../modules/anime/anime.resolver");
+const character_resolver_1 = require("../modules/character/character.resolver");
+const studio_resolver_1 = require("../modules/studio/studio.resolver");
+const genre_resolver_1 = require("../modules/genre/genre.resolver");
 typeorm_1.useContainer(typedi_1.Container);
 //
 const start = async () => {

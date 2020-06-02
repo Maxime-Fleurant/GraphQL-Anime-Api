@@ -1,7 +1,8 @@
 import { Resolver, Query, Arg, FieldResolver, Root, Mutation, Ctx } from 'type-graphql';
 import { InjectRepository } from 'typeorm-typedi-extensions';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { Inject } from 'typedi';
+import DataLoader from 'dataloader';
 
 import { Anime } from './anime.type';
 import { Character } from '../character/character.type';
@@ -9,40 +10,42 @@ import { Studio } from '../studio/studio.type';
 import { Genre } from '../genre/genre.type';
 import { AnimeInput, UpdateAnimeInput } from './types/anime-input';
 import { BaseCharacterInput } from '../character/types/character-input';
-import { IContext } from '../..';
-import { Class1 } from '../../test';
+import { CharacterRepository } from '../character/character.repository';
 
 @Resolver(() => Anime)
 export class AnimeResolver {
   constructor(
     @InjectRepository(Anime) private animeRepository: Repository<Anime>,
     @InjectRepository(Character) private characterRepository: Repository<Character>,
-    @InjectRepository(Studio) private studioRepository: Repository<Studio>
+    @InjectRepository(CharacterRepository) private aa: CharacterRepository,
+    @InjectRepository(Studio) private studioRepository: Repository<Studio>,
+    @Inject('test') private Loader: typeof DataLoader
   ) {}
-
-  @Inject()
-  test: Class1;
 
   @Query(() => [Anime])
   async animes(): Promise<Anime[]> {
+    console.log(this.aa, 'fdlfkdl');
+    const tt = new this.Loader((keys) => this.aa.batchFindbyAnime(keys));
     const animes = await this.animeRepository.find();
 
     return animes;
   }
 
   @Query(() => Anime)
-  async anime(@Arg('id') id: string, @Ctx() context: IContext): Promise<Anime | undefined> {
-    console.log(this.test);
+  async anime(@Arg('id') id: string): Promise<Anime | undefined> {
     const anime = await this.animeRepository.findOne(id);
 
     return anime;
   }
 
   @FieldResolver()
-  async characters(@Root() parent: Anime): Promise<Character[]> {
-    const characters = await this.characterRepository.find({ where: { anime: parent.id } });
+  async characters(
+    @Root() parent: Anime,
+    @Ctx() context: Record<string, any>
+  ): Promise<Character[]> {
+    const result = await context.testLoader.load(parent.id);
 
-    return characters;
+    return result;
   }
 
   @FieldResolver()

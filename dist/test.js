@@ -5,14 +5,23 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const di_1 = require("@graphql-modules/di");
-const typeorm_1 = require("typeorm");
-const anime_type_1 = require("./anime.type");
-let AnimeRepository = class AnimeRepository extends typeorm_1.Repository {
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-AnimeRepository = __decorate([
-    di_1.Injectable(),
-    typeorm_1.EntityRepository(anime_type_1.Anime)
-], AnimeRepository);
-exports.AnimeRepository = AnimeRepository;
+Object.defineProperty(exports, "__esModule", { value: true });
+require("reflect-metadata");
+const typedi_1 = require("typedi");
+let Class1 = class Class1 {
+    constructor() {
+        this.stuff = 1;
+        console.log('constructor');
+    }
+    test() {
+        console.log(this.stuff);
+    }
+};
+Class1 = __decorate([
+    typedi_1.Service(),
+    __metadata("design:paramtypes", [])
+], Class1);
+exports.Class1 = Class1;
