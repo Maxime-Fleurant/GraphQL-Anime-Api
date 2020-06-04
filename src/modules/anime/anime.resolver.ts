@@ -1,8 +1,6 @@
 import { Resolver, Query, Arg, FieldResolver, Root, Mutation, Ctx } from 'type-graphql';
 import { InjectRepository } from 'typeorm-typedi-extensions';
-import { Repository, In } from 'typeorm';
-import { Inject } from 'typedi';
-import DataLoader from 'dataloader';
+import { Repository } from 'typeorm';
 
 import { Anime } from './anime.type';
 import { Character } from '../character/character.type';
@@ -10,25 +8,15 @@ import { Studio } from '../studio/studio.type';
 import { Genre } from '../genre/genre.type';
 import { AnimeInput, UpdateAnimeInput } from './types/anime-input';
 import { BaseCharacterInput } from '../character/types/character-input';
-import { CharacterRepository } from '../character/character.repository';
+import { createGenericResolver } from '../../common/GenericResolver';
 
 @Resolver(() => Anime)
-export class AnimeResolver {
+export class AnimeResolver extends createGenericResolver('anime', Anime) {
   constructor(
     @InjectRepository(Anime) private animeRepository: Repository<Anime>,
-    @InjectRepository(Character) private characterRepository: Repository<Character>,
-    @InjectRepository(CharacterRepository) private aa: CharacterRepository,
-    @InjectRepository(Studio) private studioRepository: Repository<Studio>,
-    @Inject('test') private Loader: typeof DataLoader
-  ) {}
-
-  @Query(() => [Anime])
-  async animes(): Promise<Anime[]> {
-    console.log(this.aa, 'fdlfkdl');
-    const tt = new this.Loader((keys) => this.aa.batchFindbyAnime(keys));
-    const animes = await this.animeRepository.find();
-
-    return animes;
+    @InjectRepository(Studio) private studioRepository: Repository<Studio>
+  ) {
+    super();
   }
 
   @Query(() => Anime)
@@ -43,7 +31,8 @@ export class AnimeResolver {
     @Root() parent: Anime,
     @Ctx() context: Record<string, any>
   ): Promise<Character[]> {
-    const result = await context.testLoader.load(parent.id);
+    console.log(context.loaders.characterLoaders);
+    const result = await context.loaders.characterLoaders.batchFindbyAnime.load(parent.id);
 
     return result;
   }
