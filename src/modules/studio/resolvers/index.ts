@@ -1,24 +1,17 @@
-import { Resolver, Query, Arg, FieldResolver, Root, Mutation } from 'type-graphql';
+import { Resolver, Arg, FieldResolver, Root, Mutation } from 'type-graphql';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Repository } from 'typeorm';
-import { Anime } from '../anime/anime.type';
-import { Studio } from './studio.type';
+import { Anime } from '../../anime/anime.type';
+import { Studio } from '../studio.type';
+import { createGenericResolver } from '../../../common/GenericResolver';
 
 @Resolver(() => Studio)
-export class StudioResolver {
+export class StudioResolver extends createGenericResolver('Studio', Studio) {
   constructor(
     @InjectRepository(Anime) private animeRepository: Repository<Anime>,
     @InjectRepository(Studio) private studioRepository: Repository<Studio>
-  ) {}
-
-  @Query(() => [Studio])
-  async studios(): Promise<Studio[]> {
-    return this.studioRepository.find();
-  }
-
-  @Query(() => Studio)
-  async studio(@Arg('id') id: string): Promise<Studio | undefined> {
-    return this.studioRepository.findOne(id);
+  ) {
+    super();
   }
 
   @FieldResolver()
@@ -47,12 +40,5 @@ export class StudioResolver {
     const updatedStudio = await this.studioRepository.findOne(studioID);
 
     return updatedStudio;
-  }
-
-  @Mutation(() => String)
-  async deleteStudio(@Arg('studioId') studioId: number): Promise<string> {
-    await this.studioRepository.delete(studioId);
-
-    return 'deleted';
   }
 }

@@ -1,17 +1,18 @@
-import { Resolver, Query, Arg, FieldResolver, Root, Mutation, Ctx } from 'type-graphql';
+import { Resolver, Arg, FieldResolver, Root, Mutation, Ctx } from 'type-graphql';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Repository } from 'typeorm';
 
-import { Anime } from './anime.type';
-import { Character } from '../character/character.type';
-import { Studio } from '../studio/studio.type';
-import { Genre } from '../genre/genre.type';
-import { AnimeInput, UpdateAnimeInput } from './types/anime-input';
-import { BaseCharacterInput } from '../character/types/character-input';
-import { createGenericResolver } from '../../common/GenericResolver';
+import { Anime } from '../anime.type';
+import { Character } from '../../character/character.type';
+import { Studio } from '../../studio/studio.type';
+import { Genre } from '../../genre/genre.type';
+import { AnimeInput, UpdateAnimeInput } from './inputs/anime-input';
+import { BaseCharacterInput } from '../../character/resolvers/types/character-input';
+import { createGenericResolver } from '../../../common/GenericResolver';
+import { IContext } from '../../../app';
 
 @Resolver(() => Anime)
-export class AnimeResolver extends createGenericResolver('anime', Anime) {
+export class AnimeResolver extends createGenericResolver('Anime', Anime) {
   constructor(
     @InjectRepository(Anime) private animeRepository: Repository<Anime>,
     @InjectRepository(Studio) private studioRepository: Repository<Studio>
@@ -19,40 +20,32 @@ export class AnimeResolver extends createGenericResolver('anime', Anime) {
     super();
   }
 
-  @Query(() => Anime)
-  async anime(@Arg('id') id: string): Promise<Anime | undefined> {
-    const anime = await this.animeRepository.findOne(id);
-
-    return anime;
-  }
-
   @FieldResolver()
-  async characters(
-    @Root() parent: Anime,
-    @Ctx() context: Record<string, any>
-  ): Promise<Character[]> {
-    console.log(context.loaders.characterLoaders);
+  async characters(@Root() parent: Anime, @Ctx() context: IContext): Promise<Character[]> {
     const result = await context.loaders.characterLoaders.batchFindbyAnime.load(parent.id);
 
     return result;
   }
 
   @FieldResolver()
-  async studio(@Root() parent: Anime): Promise<Studio | undefined> {
-    const studio = await this.studioRepository.findOne(parent.studioId);
+  async studio(@Root() parent: Anime, @Ctx() context: IContext): Promise<Studio | undefined> {
+    const studio = await context.loaders.studioLoaders.batchFindById.load(parent.studioId);
 
     return studio;
   }
 
   @FieldResolver()
-  async genres(@Root() parent: Anime): Promise<Genre[]> {
-    const genres = await this.animeRepository
-      .createQueryBuilder()
-      .relation(Anime, 'genres')
-      .of(parent.id)
-      .loadMany();
+  async genres(@Root() parent: Anime, @Ctx() context: IContext): Promise<void> {
+    console.log('fdlkfdlkfldk');
+    await context.loaders.animeLoaders.batchFindGenreFromAnimeIds.load(parent.id);
 
-    return genres;
+    // const genres = await this.animeRepository
+    //   .createQueryBuilder()
+    //   .relation(Anime, 'genres')
+    //   .of(parent.id)
+    //   .loadMany();
+
+    // return genres;
   }
 
   @Mutation(() => Anime)
@@ -119,12 +112,5 @@ export class AnimeResolver extends createGenericResolver('anime', Anime) {
     const anime = await this.animeRepository.findOne(animeId);
 
     return anime;
-  }
-
-  @Mutation(() => String)
-  async deleteAnime(@Arg('animeId') animeId: number): Promise<string> {
-    await this.animeRepository.delete(animeId);
-
-    return 'deleted';
   }
 }

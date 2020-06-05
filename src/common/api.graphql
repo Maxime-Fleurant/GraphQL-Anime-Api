@@ -48,9 +48,10 @@ type Mutation {
   createAnime(animeData: AnimeInput!, charactersData: [BaseCharacterInput!]): Anime!
   createCharacter(characterData: CharacterInput!): Character!
   createStudio(studioName: String!): Studio!
-  deleteAnime(animeId: Float!): String!
-  deleteCharacter(characterId: Float!): String!
-  deleteStudio(studioId: Float!): String!
+  deleteAnime(id: String!): String!
+  deleteCharacter(id: String!): String!
+  deleteGenre(id: String!): String!
+  deleteStudio(id: String!): String!
   removeGenreFromAnime(animeId: Float!, genreIds: [Float!]!): Anime!
   updateAnime(animeId: Float!, updateData: UpdateAnimeInput!): Anime!
   updateCharacter(characterData: UpdateCharacterInput!, characterId: Float!): Character!
@@ -58,14 +59,14 @@ type Mutation {
 }
 
 type Query {
-  anime(id: String!): Anime!
-  animes: [Anime!]!
-  character(id: String!): Character!
-  characters: [Character!]!
-  genre(id: String!): Genre!
-  genres: [Genre!]!
-  studio(id: String!): Studio!
-  studios: [Studio!]!
+  Anime(id: String!): Anime!
+  Animes: [Anime!]!
+  Character(id: String!): Character!
+  Characters: [Character!]!
+  Genre(id: String!): Genre!
+  Genres: [Genre!]!
+  Studio(id: String!): Studio!
+  Studios: [Studio!]!
 }
 
 type Studio {

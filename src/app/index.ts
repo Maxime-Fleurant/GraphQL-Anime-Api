@@ -6,21 +6,20 @@ import { createConnection, useContainer } from 'typeorm';
 
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
-impor't { Container } from 'typedi';
+import { Container } from 'typedi';
 
-import { CharacterResolver } from '../modules/character/character.resolver';
-import { StudioResolver } from '../modules/studio/studio.resolver';
-import { GenreResolver } from '../modules/genre/genre.resolver';
-
-import { AnimeResolver } from '../modules/anime/anime.resolver';
-import { Loader } from './Loader';
+import { AnimeResolver } from '../modules/anime/resolvers';
+import { CharacterResolver } from '../modules/character/resolvers';
+import { GenreResolver } from '../modules/genre/resolvers';
+import { StudioResolver } from '../modules/studio/resolvers';
+import { Loaders } from './loaders';
 
 useContainer(Container);
- 
+
 const start = async (): Promise<void> => {
   const app = express();
 
-  awai't createConnection();
+  await createConnection();
 
   const schema = await buildSchema({
     resolvers: [AnimeResolver, CharacterResolver, StudioResolver, GenreResolver],
@@ -28,11 +27,13 @@ const start = async (): Promise<void> => {
     emitSchemaFile: { path: path.resolve(__dirname, '../common/api.graphql') },
   });
 
+  const loaders = Container.get(Loaders);
+
   const apolloServer = new ApolloServer({
     schema,
     context: () => {
       return {
-        loaders: {},
+        loaders: loaders.createLoaders(),
       };
     },
   });
@@ -43,3 +44,7 @@ const start = async (): Promise<void> => {
 };
 
 start();
+
+export interface IContext {
+  loaders: ReturnType<Loaders['createLoaders']>;
+}

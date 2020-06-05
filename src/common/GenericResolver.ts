@@ -1,4 +1,4 @@
-import { Resolver, Query, ClassType, Arg } from 'type-graphql';
+import { Resolver, Query, ClassType, Arg, Mutation } from 'type-graphql';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Repository } from 'typeorm';
 
@@ -7,10 +7,21 @@ export function createGenericResolver<T extends ClassType>(suffix: string, objec
   abstract class BaseResolver {
     @InjectRepository(objectTypeCls) private genericRepo: Repository<T>;
 
-    @Query((type) => [objectTypeCls], { name: `${suffix}s` })
+    @Query(() => [objectTypeCls], { name: `${suffix}s` })
     async getAll(): Promise<T[] | undefined> {
-      console.log('generic');
       return this.genericRepo.find();
+    }
+
+    @Query(() => objectTypeCls, { name: `${suffix}` })
+    async getOne(@Arg('id') id: string): Promise<T | undefined> {
+      return this.genericRepo.findOne(id);
+    }
+
+    @Mutation(() => String, { name: `delete${suffix}` })
+    async delete(@Arg('id') id: string): Promise<string> {
+      await this.genericRepo.delete(id);
+
+      return 'deleted';
     }
   }
 

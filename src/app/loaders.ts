@@ -1,0 +1,21 @@
+import { Service } from 'typedi';
+import { CharacterLoader } from '../modules/character/loaders';
+import { StudioLoader } from '../modules/studio/loaders';
+import { AnimeLoaders } from '../modules/anime/loaders';
+
+@Service()
+export class Loaders {
+  constructor(
+    private characterLoader: CharacterLoader,
+    private studioLoader: StudioLoader,
+    private animeLoaders: AnimeLoaders
+  ) {}
+
+  createLoaders() {
+    return {
+      characterLoaders: this.characterLoader.createLoaders(),
+      studioLoaders: this.studioLoader.createLoaders(),
+      animeLoaders: this.animeLoaders.createLoaders(),
+    };
+  }
+}

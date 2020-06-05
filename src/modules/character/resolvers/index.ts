@@ -1,25 +1,18 @@
-import { Resolver, Query, Arg, FieldResolver, Root, Mutation } from 'type-graphql';
+import { Resolver, Arg, FieldResolver, Root, Mutation } from 'type-graphql';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Repository } from 'typeorm';
-import { Character } from './character.type';
-import { Anime } from '../anime/anime.type';
+import { Character } from '../character.type';
+import { Anime } from '../../anime/anime.type';
 import { CharacterInput, UpdateCharacterInput } from './types/character-input';
+import { createGenericResolver } from '../../../common/GenericResolver';
 
 @Resolver(() => Character)
-export class CharacterResolver {
+export class CharacterResolver extends createGenericResolver('Character', Character) {
   constructor(
     @InjectRepository(Anime) private animeRepository: Repository<Anime>,
     @InjectRepository(Character) private characterRepository: Repository<Character>
-  ) {}
-
-  @Query(() => [Character])
-  async characters(): Promise<Character[]> {
-    return this.characterRepository.find();
-  }
-
-  @Query(() => Character)
-  async character(@Arg('id') id: string): Promise<Character | undefined> {
-    return this.characterRepository.findOne(id);
+  ) {
+    super();
   }
 
   @FieldResolver()
@@ -53,12 +46,5 @@ export class CharacterResolver {
     const updatedCharacter = await this.characterRepository.findOne(characterId);
 
     return updatedCharacter;
-  }
-
-  @Mutation(() => String)
-  async deleteCharacter(@Arg('characterId') characterId: number): Promise<string> {
-    await this.characterRepository.delete(characterId);
-
-    return 'deleted';
   }
 }

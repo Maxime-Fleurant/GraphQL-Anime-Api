@@ -1,33 +1,32 @@
 import { Repository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Service } from 'typedi';
-
+import DataLoader from 'dataloader';
+import _ from 'lodash';
 import { Character } from '../character.type';
-import { CreateSingleLoader } from '../../../common/createSingleLoader';
 
 @Service()
 export class CharacterLoader {
-  constructor(
-    @InjectRepository(Character) private characterRepo: Repository<Character>,
-    private loaderUtil: CreateSingleLoader
-  ) {}
+  constructor(@InjectRepository(Character) private characterRepo: Repository<Character>) {}
 
-  async batchFindbyAnime(keys: readonly unknown[]): Promise<Character[][]> {
+  batchFindbyAnime: (keys: readonly number[]) => Promise<Character[][]> = async (keys) => {
     const characters = await this.characterRepo
       .createQueryBuilder('character')
       .where('character.anime in (:...animeIds)', { animeIds: keys })
       .getMany();
+
     const formatedCharacters = keys.map((key) =>
       characters.filter((character) => {
         return character.animeId === key;
       })
     );
-    return formatedCharacters;
-  }
 
-  createLoaders() {
+    return formatedCharacters;
+  };
+
+  createLoaders = () => {
     return {
-      batchFindbyAnime: this.loaderUtil.create(this.batchFindbyAnime),
+      batchFindbyAnime: new DataLoader<number, Character[]>((keys) => this.batchFindbyAnime(keys)),
     };
-  }
+  };
 }

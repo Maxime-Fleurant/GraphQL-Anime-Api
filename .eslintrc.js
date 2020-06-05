@@ -22,5 +22,6 @@ module.exports = {
     'no-useless-constructor': 'off',
     'max-classes-per-file': 'off',
     '@typescript-eslint/interface-name-prefix': 'off',
+    '@typescript-eslint/explicit-function-return-type': 'off',
   },
 };
