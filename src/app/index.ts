@@ -3,6 +3,7 @@ import 'reflect-metadata';
 import path from 'path';
 import express from 'express';
 import { createConnection, useContainer } from 'typeorm';
+import dotEnv from 'dotenv';
 
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
@@ -13,8 +14,10 @@ import { CharacterResolver } from '../modules/character/resolvers';
 import { GenreResolver } from '../modules/genre/resolvers';
 import { StudioResolver } from '../modules/studio/resolvers';
 import { Loaders } from './loaders';
+import { UserResolver } from '../modules/user/resolver';
 
 useContainer(Container);
+dotEnv.config();
 
 const start = async (): Promise<void> => {
   const app = express();
@@ -22,7 +25,7 @@ const start = async (): Promise<void> => {
   await createConnection();
 
   const schema = await buildSchema({
-    resolvers: [AnimeResolver, CharacterResolver, StudioResolver, GenreResolver],
+    resolvers: [AnimeResolver, CharacterResolver, StudioResolver, GenreResolver, UserResolver],
     container: Container,
     emitSchemaFile: { path: path.resolve(__dirname, '../common/api.graphql') },
   });
@@ -31,7 +34,8 @@ const start = async (): Promise<void> => {
 
   const apolloServer = new ApolloServer({
     schema,
-    context: () => {
+    context: ({ req }) => {
+      console.log(req.headers);
       return {
         loaders: loaders.createLoaders(),
       };

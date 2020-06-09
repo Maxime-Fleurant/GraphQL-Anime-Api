@@ -1,9 +1,11 @@
-import { Resolver, FieldResolver, Root } from 'type-graphql';
+import { Resolver, FieldResolver, Root, Ctx } from 'type-graphql';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Repository } from 'typeorm';
+
 import { Genre } from '../genre.type';
 import { Anime } from '../../anime/anime.type';
 import { createGenericResolver } from '../../../common/GenericResolver';
+import { IContext } from '../../../app';
 
 @Resolver(() => Genre)
 export class GenreResolver extends createGenericResolver('Genre', Genre) {
@@ -12,12 +14,8 @@ export class GenreResolver extends createGenericResolver('Genre', Genre) {
   }
 
   @FieldResolver()
-  async animes(@Root() parent: Genre): Promise<Anime[]> {
-    const animes = await this.genreRepository
-      .createQueryBuilder()
-      .relation(Genre, 'animes')
-      .of(parent.id)
-      .loadMany();
+  async animes(@Root() parent: Genre, @Ctx() context: IContext): Promise<Anime[] | undefined> {
+    const animes = await context.loaders.genreLoaders.batchAnimeByGenre.load(parent.id);
 
     return animes;
   }

@@ -40,7 +40,7 @@ export class Anime extends BaseEntity {
   @OneToMany(() => Character, (character) => character.anime, { cascade: true })
   characters: Character[];
 
-  @Field(() => [Genre])
+  @Field(() => [Genre!])
   @ManyToMany(() => Genre, (genre) => genre.animes)
   @JoinTable()
   genres: Genre[];

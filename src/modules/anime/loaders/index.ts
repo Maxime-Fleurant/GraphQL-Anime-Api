@@ -4,32 +4,49 @@ import { Service } from 'typedi';
 import DataLoader from 'dataloader';
 import _ from 'lodash';
 import { Anime } from '../anime.type';
+import { Genre } from '../../genre/genre.type';
 
 @Service()
 export class AnimeLoaders {
-  constructor(@InjectRepository(Anime) private studioRepo: Repository<Anime>) {}
+  constructor(@InjectRepository(Anime) private animeRepo: Repository<Anime>) {}
 
-  batchFindGenreFromAnimeIds: (keys: readonly number[]) => Promise<number[]> = async (keys) => {
-    console.log('fdlk');
-    const studios = await this.studioRepo
-      .createQueryBuilder('genre')
-      .where('genre.animes in (:...animeIds)', { animeIds: keys })
+  batchGenreByAnimeIds = async (keys: readonly number[]): Promise<Genre[][]> => {
+    const animes = await this.animeRepo
+      .createQueryBuilder('anime')
+      .leftJoinAndSelect('anime.genres', 'genres')
+      .where('anime.id in (:...animeIds)', { animeIds: keys })
       .getMany();
-    console.log(studios);
-    // const formatedStudios = keys.map((key) =>
-    //   studios.find((studio) => {
-    //     return studio.id === key;
-    //   })
-    // );
 
-    return [1];
+    const formatedGenre = keys.map((key) => {
+      const anime = animes.find((oneAnime) => {
+        return oneAnime.id === key;
+      });
+
+      return anime ? anime.genres : [];
+    });
+
+    return formatedGenre;
+  };
+
+  batchFindById = async (keys: readonly number[]): Promise<(Anime | undefined)[]> => {
+    const ids = [...keys];
+    const animes = await this.animeRepo.findByIds(ids);
+
+    const formatedAnime = keys.map((key) =>
+      animes.find((anime) => {
+        return anime.id === key;
+      })
+    );
+
+    return formatedAnime;
   };
 
   createLoaders = () => {
     return {
-      batchFindGenreFromAnimeIds: new DataLoader<number, number>((keys) =>
-        this.batchFindGenreFromAnimeIds(keys)
+      batchGenreByAnimeIds: new DataLoader<number, Genre[]>((keys) =>
+        this.batchGenreByAnimeIds(keys)
       ),
+      batchFindById: new DataLoader<number, Anime | undefined>((keys) => this.batchFindById(keys)),
     };
   };
 }

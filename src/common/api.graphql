@@ -37,6 +37,11 @@ input CharacterInput {
   name: String!
 }
 
+input CreateUserInput {
+  name: String!
+  password: String!
+}
+
 type Genre {
   animes: [Anime!]!
   id: ID!
@@ -48,6 +53,7 @@ type Mutation {
   createAnime(animeData: AnimeInput!, charactersData: [BaseCharacterInput!]): Anime!
   createCharacter(characterData: CharacterInput!): Character!
   createStudio(studioName: String!): Studio!
+  createUser(input: CreateUserInput!): User!
   deleteAnime(id: String!): String!
   deleteCharacter(id: String!): String!
   deleteGenre(id: String!): String!
@@ -84,4 +90,11 @@ input UpdateAnimeInput {
 input UpdateCharacterInput {
   description: String
   name: String
+}
+
+type User {
+  id: ID!
+  name: String!
+  password: String!
+  role: String!
 }

@@ -1,9 +1,10 @@
-import { Resolver, Arg, FieldResolver, Root, Mutation } from 'type-graphql';
+import { Resolver, Arg, FieldResolver, Root, Mutation, Ctx } from 'type-graphql';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Repository } from 'typeorm';
 import { Anime } from '../../anime/anime.type';
 import { Studio } from '../studio.type';
 import { createGenericResolver } from '../../../common/GenericResolver';
+import { IContext } from '../../../app';
 
 @Resolver(() => Studio)
 export class StudioResolver extends createGenericResolver('Studio', Studio) {
@@ -15,8 +16,8 @@ export class StudioResolver extends createGenericResolver('Studio', Studio) {
   }
 
   @FieldResolver()
-  async animes(@Root() parent: Studio): Promise<Anime[]> {
-    const animes = await this.animeRepository.find({ where: { studio: parent.id } });
+  async animes(@Root() parent: Studio, @Ctx() context: IContext): Promise<Anime[]> {
+    const animes = await context.loaders.studioLoaders.batchFindAnimesByStudioIds.load(parent.id);
 
     return animes;
   }

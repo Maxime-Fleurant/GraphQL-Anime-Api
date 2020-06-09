@@ -13,10 +13,7 @@ import { IContext } from '../../../app';
 
 @Resolver(() => Anime)
 export class AnimeResolver extends createGenericResolver('Anime', Anime) {
-  constructor(
-    @InjectRepository(Anime) private animeRepository: Repository<Anime>,
-    @InjectRepository(Studio) private studioRepository: Repository<Studio>
-  ) {
+  constructor(@InjectRepository(Anime) private animeRepository: Repository<Anime>) {
     super();
   }
 
@@ -35,17 +32,10 @@ export class AnimeResolver extends createGenericResolver('Anime', Anime) {
   }
 
   @FieldResolver()
-  async genres(@Root() parent: Anime, @Ctx() context: IContext): Promise<void> {
-    console.log('fdlkfdlkfldk');
-    await context.loaders.animeLoaders.batchFindGenreFromAnimeIds.load(parent.id);
+  async genres(@Root() parent: Anime, @Ctx() context: IContext): Promise<Genre[] | undefined> {
+    const genres = await context.loaders.animeLoaders.batchGenreByAnimeIds.load(parent.id);
 
-    // const genres = await this.animeRepository
-    //   .createQueryBuilder()
-    //   .relation(Anime, 'genres')
-    //   .of(parent.id)
-    //   .loadMany();
-
-    // return genres;
+    return genres;
   }
 
   @Mutation(() => Anime)

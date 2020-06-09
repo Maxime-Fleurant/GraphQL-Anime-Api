@@ -1,23 +1,21 @@
-import { Resolver, Arg, FieldResolver, Root, Mutation } from 'type-graphql';
+import { Resolver, Arg, FieldResolver, Root, Mutation, Ctx } from 'type-graphql';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Repository } from 'typeorm';
 import { Character } from '../character.type';
 import { Anime } from '../../anime/anime.type';
 import { CharacterInput, UpdateCharacterInput } from './types/character-input';
 import { createGenericResolver } from '../../../common/GenericResolver';
+import { IContext } from '../../../app';
 
 @Resolver(() => Character)
 export class CharacterResolver extends createGenericResolver('Character', Character) {
-  constructor(
-    @InjectRepository(Anime) private animeRepository: Repository<Anime>,
-    @InjectRepository(Character) private characterRepository: Repository<Character>
-  ) {
+  constructor(@InjectRepository(Character) private characterRepository: Repository<Character>) {
     super();
   }
 
   @FieldResolver()
-  async anime(@Root() parent: Character): Promise<Anime | undefined> {
-    const anime = await this.animeRepository.findOne(parent.animeId);
+  async anime(@Root() parent: Character, @Ctx() context: IContext): Promise<Anime | undefined> {
+    const anime = await context.loaders.animeLoaders.batchFindById.load(parent.animeId);
 
     return anime;
   }
