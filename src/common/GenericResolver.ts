@@ -1,4 +1,4 @@
-import { Resolver, Query, ClassType, Arg, Mutation } from 'type-graphql';
+import { Resolver, Query, ClassType, Arg, Mutation, Authorized } from 'type-graphql';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Repository } from 'typeorm';
 
@@ -17,6 +17,7 @@ export function createGenericResolver<T extends ClassType>(suffix: string, objec
       return this.genericRepo.findOne(id);
     }
 
+    @Authorized(['admin'])
     @Mutation(() => String, { name: `delete${suffix}` })
     async delete(@Arg('id') id: string): Promise<string> {
       await this.genericRepo.delete(id);

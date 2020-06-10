@@ -1,4 +1,4 @@
-import { Resolver, Arg, FieldResolver, Root, Mutation, Ctx } from 'type-graphql';
+import { Resolver, Arg, FieldResolver, Root, Mutation, Ctx, Authorized } from 'type-graphql';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Repository } from 'typeorm';
 import { Anime } from '../../anime/anime.type';
@@ -22,6 +22,7 @@ export class StudioResolver extends createGenericResolver('Studio', Studio) {
     return animes;
   }
 
+  @Authorized(['admin'])
   @Mutation(() => Studio)
   async createStudio(@Arg('studioName') studioName: string): Promise<Studio> {
     const newStudio = this.studioRepository.save(
@@ -31,6 +32,7 @@ export class StudioResolver extends createGenericResolver('Studio', Studio) {
     return newStudio;
   }
 
+  @Authorized(['admin'])
   @Mutation(() => Studio)
   async updateStudio(
     @Arg('studioId') studioID: number,

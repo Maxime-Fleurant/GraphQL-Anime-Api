@@ -8,6 +8,7 @@ type Anime {
   desciption: String!
   genres: [Genre!]!
   id: ID!
+  reviews: [Review!]!
   studio: Studio!
   title: String!
 }
@@ -48,6 +49,10 @@ type Genre {
   name: String!
 }
 
+type LoginResult {
+  token: String
+}
+
 type Mutation {
   addGenreFromAnime(animeId: Float!, genreIds: [Float!]!): Anime!
   createAnime(animeData: AnimeInput!, charactersData: [BaseCharacterInput!]): Anime!
@@ -71,8 +76,17 @@ type Query {
   Characters: [Character!]!
   Genre(id: String!): Genre!
   Genres: [Genre!]!
+  login(name: String!, password: String!): LoginResult!
   Studio(id: String!): Studio!
   Studios: [Studio!]!
+}
+
+type Review {
+  anime: Anime!
+  body: String!
+  id: ID!
+  summary: String!
+  user: User!
 }
 
 type Studio {
@@ -95,6 +109,5 @@ input UpdateCharacterInput {
 type User {
   id: ID!
   name: String!
-  password: String!
-  role: String!
+  reviews: [Review!]!
 }

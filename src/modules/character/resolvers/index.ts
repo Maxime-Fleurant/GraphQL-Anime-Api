@@ -1,4 +1,4 @@
-import { Resolver, Arg, FieldResolver, Root, Mutation, Ctx } from 'type-graphql';
+import { Resolver, Arg, FieldResolver, Root, Mutation, Ctx, Authorized } from 'type-graphql';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Repository } from 'typeorm';
 import { Character } from '../character.type';
@@ -20,6 +20,7 @@ export class CharacterResolver extends createGenericResolver('Character', Charac
     return anime;
   }
 
+  @Authorized(['admin'])
   @Mutation(() => Character)
   async createCharacter(@Arg('characterData') characterData: CharacterInput): Promise<Character> {
     const { animeId, ...formatedCharacterData } = {
@@ -34,6 +35,7 @@ export class CharacterResolver extends createGenericResolver('Character', Charac
     return newCharacter;
   }
 
+  @Authorized(['admin'])
   @Mutation(() => Character)
   async updateCharacter(
     @Arg('characterId') characterId: number,

@@ -1,4 +1,4 @@
-import { Resolver, Arg, FieldResolver, Root, Mutation, Ctx } from 'type-graphql';
+import { Resolver, Arg, FieldResolver, Root, Mutation, Ctx, Authorized } from 'type-graphql';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Repository } from 'typeorm';
 
@@ -38,6 +38,7 @@ export class AnimeResolver extends createGenericResolver('Anime', Anime) {
     return genres;
   }
 
+  @Authorized(['admin'])
   @Mutation(() => Anime)
   async createAnime(
     @Arg('animeData') { title, desciption, studioId, genreIds }: AnimeInput,
@@ -59,6 +60,7 @@ export class AnimeResolver extends createGenericResolver('Anime', Anime) {
     return this.animeRepository.save(newAnime);
   }
 
+  @Authorized(['admin'])
   @Mutation(() => Anime)
   async addGenreFromAnime(
     @Arg('animeId') animeId: number,
@@ -73,6 +75,7 @@ export class AnimeResolver extends createGenericResolver('Anime', Anime) {
     return this.animeRepository.findOne(animeId);
   }
 
+  @Authorized(['admin'])
   @Mutation(() => Anime)
   async removeGenreFromAnime(
     @Arg('animeId') animeId: number,
