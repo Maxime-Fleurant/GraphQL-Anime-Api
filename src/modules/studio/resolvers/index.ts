@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Anime } from '../../anime/anime.type';
 import { Studio } from '../studio.type';
 import { createGenericResolver } from '../../../common/GenericResolver';
-import { IContext } from '../../../app';
+import { IContext } from '../../../common/types/IContext';
 
 @Resolver(() => Studio)
 export class StudioResolver extends createGenericResolver('Studio', Studio) {

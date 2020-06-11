@@ -38,9 +38,22 @@ input CharacterInput {
   name: String!
 }
 
+input CreateReviewInput {
+  animeId: Float!
+  body: String!
+  score: Float!
+  summary: String!
+  userId: Float!
+}
+
 input CreateUserInput {
   name: String!
   password: String!
+}
+
+type ErrorType {
+  code: Float!
+  error: String!
 }
 
 type Genre {
@@ -57,15 +70,18 @@ type Mutation {
   addGenreFromAnime(animeId: Float!, genreIds: [Float!]!): Anime!
   createAnime(animeData: AnimeInput!, charactersData: [BaseCharacterInput!]): Anime!
   createCharacter(characterData: CharacterInput!): Character!
+  createReview(input: CreateReviewInput!): Review!
   createStudio(studioName: String!): Studio!
   createUser(input: CreateUserInput!): User!
   deleteAnime(id: String!): String!
   deleteCharacter(id: String!): String!
   deleteGenre(id: String!): String!
+  deleteReview(id: String!): String!
   deleteStudio(id: String!): String!
   removeGenreFromAnime(animeId: Float!, genreIds: [Float!]!): Anime!
   updateAnime(animeId: Float!, updateData: UpdateAnimeInput!): Anime!
   updateCharacter(characterData: UpdateCharacterInput!, characterId: Float!): Character!
+  updateReview(id: Float!, input: UpdateReviewInput!): ReviewResult!
   updateStudio(studioId: Float!, studioName: String!): Studio!
 }
 
@@ -77,6 +93,8 @@ type Query {
   Genre(id: String!): Genre!
   Genres: [Genre!]!
   login(name: String!, password: String!): LoginResult!
+  Review(id: String!): Review!
+  Reviews: [Review!]!
   Studio(id: String!): Studio!
   Studios: [Studio!]!
 }
@@ -87,6 +105,11 @@ type Review {
   id: ID!
   summary: String!
   user: User!
+}
+
+type ReviewResult {
+  data: Review
+  error: ErrorType
 }
 
 type Studio {
@@ -104,6 +127,12 @@ input UpdateAnimeInput {
 input UpdateCharacterInput {
   description: String
   name: String
+}
+
+input UpdateReviewInput {
+  body: String
+  score: Float
+  summary: String
 }
 
 type User {

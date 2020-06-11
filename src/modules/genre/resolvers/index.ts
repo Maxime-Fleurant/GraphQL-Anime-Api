@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { Genre } from '../genre.type';
 import { Anime } from '../../anime/anime.type';
 import { createGenericResolver } from '../../../common/GenericResolver';
-import { IContext } from '../../../app';
+import { IContext } from '../../../common/types/IContext';
 
 @Resolver(() => Genre)
 export class GenreResolver extends createGenericResolver('Genre', Genre) {

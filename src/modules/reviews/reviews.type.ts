@@ -1,7 +1,8 @@
-import { ObjectType, Field, ID } from 'type-graphql';
+import { ObjectType, Field, ID, InputType } from 'type-graphql';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, RelationId } from 'typeorm';
 import { Anime } from '../anime/anime.type';
 import { User } from '../user/user.type';
+import { createResultType } from '../../common/graphqlTypes/result-type';
 
 @ObjectType()
 @Entity()
@@ -35,3 +36,38 @@ export class Review {
   @RelationId((review: Review) => review.user)
   userId: number;
 }
+
+@InputType()
+export class CreateReviewInput {
+  @Field()
+  summary: string;
+
+  @Field()
+  body: string;
+
+  @Field()
+  score: number;
+
+  @Field()
+  animeId: number;
+
+  @Field()
+  userId: number;
+}
+
+@InputType()
+export class UpdateReviewInput {
+  @Field({ nullable: true })
+  summary?: string;
+
+  @Field({ nullable: true })
+  body?: string;
+
+  @Field({ nullable: true })
+  score?: number;
+}
+
+@ObjectType()
+export class ReviewResult extends createResultType(Review) {}
+
+export type TReviewResult = InstanceType<typeof ReviewResult>;

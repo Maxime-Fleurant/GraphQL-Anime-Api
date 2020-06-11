@@ -9,7 +9,7 @@ import { Genre } from '../../genre/genre.type';
 import { AnimeInput, UpdateAnimeInput } from './inputs/anime-input';
 import { BaseCharacterInput } from '../../character/resolvers/types/character-input';
 import { createGenericResolver } from '../../../common/GenericResolver';
-import { IContext } from '../../../app';
+import { IContext } from '../../../common/types/IContext';
 
 @Resolver(() => Anime)
 export class AnimeResolver extends createGenericResolver('Anime', Anime) {

@@ -5,7 +5,7 @@ import { Character } from '../character.type';
 import { Anime } from '../../anime/anime.type';
 import { CharacterInput, UpdateCharacterInput } from './types/character-input';
 import { createGenericResolver } from '../../../common/GenericResolver';
-import { IContext } from '../../../app';
+import { IContext } from '../../../common/types/IContext';
 
 @Resolver(() => Character)
 export class CharacterResolver extends createGenericResolver('Character', Character) {

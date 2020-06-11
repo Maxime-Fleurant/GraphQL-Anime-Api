@@ -1,5 +1,5 @@
 import { AuthChecker } from 'type-graphql';
-import { IContext } from '.';
+import { IContext } from '../common/types/IContext';
 
 export const customAuthChecker: AuthChecker<IContext> = (
   { root, args, context: { user }, info },
@@ -13,5 +13,5 @@ export const customAuthChecker: AuthChecker<IContext> = (
     return false;
   }
 
-  return true; // or false if access is denied
+  return true;
 };

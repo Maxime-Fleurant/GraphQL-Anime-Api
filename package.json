@@ -50,7 +50,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node ./src/app/index.ts",
+    "start": "ts-node ./src/app/app.ts",
     "dev": "nodemon",
     "build": "tsc",
     "generate": "graphql-codegen"
