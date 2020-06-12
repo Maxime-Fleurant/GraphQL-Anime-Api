@@ -8,7 +8,7 @@ export function createGenericResolver<T extends ClassType>(suffix: string, objec
     @InjectRepository(objectTypeCls) private genericRepo: Repository<T>;
 
     @Query(() => [objectTypeCls], { name: `${suffix}s` })
-    async getAll(): Promise<T[] | undefined> {
+    async getAll(): Promise<T[]> {
       return this.genericRepo.find();
     }
 

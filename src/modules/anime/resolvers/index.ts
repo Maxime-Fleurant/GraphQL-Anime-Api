@@ -2,11 +2,11 @@ import { Resolver, Arg, FieldResolver, Root, Mutation, Ctx, Authorized } from 't
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Repository } from 'typeorm';
 
-import { Anime } from '../anime.type';
+import { Anime, AnimeInput, UpdateAnimeInput } from '../anime.type';
 import { Character } from '../../character/character.type';
 import { Studio } from '../../studio/studio.type';
 import { Genre } from '../../genre/genre.type';
-import { AnimeInput, UpdateAnimeInput } from './inputs/anime-input';
+
 import { BaseCharacterInput } from '../../character/resolvers/types/character-input';
 import { createGenericResolver } from '../../../common/GenericResolver';
 import { IContext } from '../../../common/types/IContext';

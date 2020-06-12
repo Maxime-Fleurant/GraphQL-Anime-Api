@@ -9,7 +9,7 @@ import {
   JoinTable,
   RelationId,
 } from 'typeorm';
-import { ObjectType, Field, ID, Authorized } from 'type-graphql';
+import { ObjectType, Field, ID, Authorized, InputType } from 'type-graphql';
 import { Studio } from '../studio/studio.type';
 import { Genre } from '../genre/genre.type';
 import { Character } from '../character/character.type';
@@ -50,4 +50,34 @@ export class Anime extends BaseEntity {
   @ManyToMany(() => Genre, (genre) => genre.animes)
   @JoinTable()
   genres: Genre[];
+}
+
+@InputType()
+export class BaseAnimeInput {
+  @Field()
+  title: string;
+
+  @Field()
+  desciption: string;
+
+  @Field()
+  studioId: number;
+}
+
+@InputType()
+export class AnimeInput extends BaseAnimeInput {
+  @Field(() => [Number])
+  genreIds: number[];
+}
+
+@InputType()
+export class UpdateAnimeInput {
+  @Field({ nullable: true })
+  title?: string;
+
+  @Field({ nullable: true })
+  desciption?: string;
+
+  @Field({ nullable: true })
+  studioId?: number;
 }

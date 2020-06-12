@@ -45,6 +45,7 @@ export class App {
 
         return context;
       },
+      debug: false,
     });
 
     apolloServer.applyMiddleware({ app });

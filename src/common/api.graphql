@@ -51,11 +51,6 @@ input CreateUserInput {
   password: String!
 }
 
-type ErrorType {
-  code: Float!
-  error: String!
-}
-
 type Genre {
   animes: [Anime!]!
   id: ID!
@@ -81,7 +76,7 @@ type Mutation {
   removeGenreFromAnime(animeId: Float!, genreIds: [Float!]!): Anime!
   updateAnime(animeId: Float!, updateData: UpdateAnimeInput!): Anime!
   updateCharacter(characterData: UpdateCharacterInput!, characterId: Float!): Character!
-  updateReview(id: Float!, input: UpdateReviewInput!): ReviewResult!
+  updateReview(id: Float!, input: UpdateReviewInput!): Review!
   updateStudio(studioId: Float!, studioName: String!): Studio!
 }
 
@@ -105,11 +100,6 @@ type Review {
   id: ID!
   summary: String!
   user: User!
-}
-
-type ReviewResult {
-  data: Review
-  error: ErrorType
 }
 
 type Studio {

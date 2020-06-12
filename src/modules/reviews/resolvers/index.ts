@@ -2,13 +2,7 @@ import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Repository } from 'typeorm';
 import { FieldResolver, Resolver, Root, Ctx, Mutation, Arg, Authorized } from 'type-graphql';
 
-import {
-  Review,
-  CreateReviewInput,
-  UpdateReviewInput,
-  ReviewResult,
-  TReviewResult,
-} from '../reviews.type';
+import { Review, CreateReviewInput, UpdateReviewInput } from '../reviews.type';
 import { createGenericResolver } from '../../../common/GenericResolver';
 import { Anime } from '../../anime/anime.type';
 import { IContext } from '../../../common/types/IContext';
@@ -44,38 +38,26 @@ export class ReviewResolver extends createGenericResolver('Review', Review) {
   }
 
   @Authorized()
-  @Mutation(() => ReviewResult)
+  @Mutation(() => Review)
   async updateReview(
     @Arg('id') id: number,
     @Arg('input') input: UpdateReviewInput,
     @Ctx() context: IContext
-  ): Promise<TReviewResult> {
+  ): Promise<Review | undefined> {
     const review = await this.reviewRepo.findOne(id);
 
     if (!review) {
-      return {
-        error: {
-          error: 'no review',
-          code: 400,
-        },
-      };
+      return undefined;
     }
 
     if (context.user?.id !== review.userId) {
-      return {
-        error: {
-          error: 'wrong user',
-          code: 400,
-        },
-      };
+      return undefined;
     }
 
-    const updateReviewAction = await this.reviewRepo.update(id, { ...input });
+    await this.reviewRepo.update(id, { ...input });
 
     const updatedReview = (await this.reviewRepo.findOne(id)) as Review;
 
-    return {
-      data: updatedReview,
-    };
+    return updatedReview;
   }
 }
