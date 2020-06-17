@@ -13,7 +13,6 @@ export class Studio extends BaseEntity {
   @Column()
   name: string;
 
-  @Field(() => [Anime])
   @OneToMany(() => Anime, (anime) => anime.studio)
   animes: Anime[];
 }

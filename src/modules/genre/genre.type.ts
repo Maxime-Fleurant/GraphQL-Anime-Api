@@ -13,7 +13,6 @@ export class Genre extends BaseEntity {
   @Column()
   name: string;
 
-  @Field(() => [Anime])
   @ManyToMany(() => Anime, (anime) => anime.genres, { onDelete: 'CASCADE' })
   animes: Anime[];
 }

@@ -21,17 +21,17 @@ export class Review {
   @Column({ type: 'int' })
   score: number;
 
-  @Field(() => Anime)
   @ManyToOne(() => Anime, (anime) => anime.reviews, { onDelete: 'CASCADE', nullable: false })
   anime: Anime;
 
+  @Field(() => ID)
   @RelationId((review: Review) => review.anime)
   animeId: number;
 
-  @Field(() => User)
   @ManyToOne(() => User, (user) => user.reviews, { onDelete: 'SET NULL' })
   user: User;
 
+  @Field(() => ID)
   @RelationId((review: Review) => review.user)
   userId: number;
 }

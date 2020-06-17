@@ -4,20 +4,36 @@
 # -----------------------------------------------
 
 type Anime {
-  characters: [Character!]!
-  desciption: String!
-  genres: [Genre!]!
+  bannerImage: String
+  characters: [Character]!
+  desciption: String
+  englishTitle: String
+  genres: [Genre]!
   id: ID!
-  reviews: [Review!]!
+  largeCoverImage: String
+  nativeTitle: String
+  popularity: Float!
+  reviews: [Review]!
+  romajiTitle: String
   studio: Studio!
-  title: String!
+  tags: [Tag]!
+  trailer: String!
+  xLargeCoverImage: String
 }
 
-input AnimeInput {
-  desciption: String!
+input BaseAnimeInput {
+  bannerImage: String
+  desciption: String
+  englishTitle: String
   genreIds: [Float!]!
+  largeCoverImage: String
+  nativeTitle: String
+  popularity: Float!
+  romajiTitle: String
   studioId: Float!
-  title: String!
+  tagIds: [Float!]!
+  trailer: String!
+  xLargeCoverImage: String
 }
 
 input BaseCharacterInput {
@@ -52,7 +68,6 @@ input CreateUserInput {
 }
 
 type Genre {
-  animes: [Anime!]!
   id: ID!
   name: String!
 }
@@ -63,21 +78,19 @@ type LoginResult {
 
 type Mutation {
   addGenreFromAnime(animeId: Float!, genreIds: [Float!]!): Anime!
-  createAnime(animeData: AnimeInput!, charactersData: [BaseCharacterInput!]): Anime!
+  createAnime(animeData: BaseAnimeInput!, charactersData: [BaseCharacterInput!]): Anime!
   createCharacter(characterData: CharacterInput!): Character!
   createReview(input: CreateReviewInput!): Review!
   createStudio(studioName: String!): Studio!
   createUser(input: CreateUserInput!): User!
   deleteAnime(id: String!): String!
   deleteCharacter(id: String!): String!
-  deleteGenre(id: String!): String!
   deleteReview(id: String!): String!
   deleteStudio(id: String!): String!
   removeGenreFromAnime(animeId: Float!, genreIds: [Float!]!): Anime!
   updateAnime(animeId: Float!, updateData: UpdateAnimeInput!): Anime!
   updateCharacter(characterData: UpdateCharacterInput!, characterId: Float!): Character!
   updateReview(id: Float!, input: UpdateReviewInput!): Review!
-  updateStudio(studioId: Float!, studioName: String!): Studio!
 }
 
 type Query {
@@ -85,8 +98,6 @@ type Query {
   Animes: [Anime!]!
   Character(id: String!): Character!
   Characters: [Character!]!
-  Genre(id: String!): Genre!
-  Genres: [Genre!]!
   login(name: String!, password: String!): LoginResult!
   Review(id: String!): Review!
   Reviews: [Review!]!
@@ -95,15 +106,20 @@ type Query {
 }
 
 type Review {
-  anime: Anime!
+  animeId: ID!
   body: String!
   id: ID!
   summary: String!
-  user: User!
+  userId: ID!
 }
 
 type Studio {
-  animes: [Anime!]!
+  id: ID!
+  name: String!
+}
+
+type Tag {
+  description: String!
   id: ID!
   name: String!
 }

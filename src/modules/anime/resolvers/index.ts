@@ -2,7 +2,7 @@ import { Resolver, Arg, FieldResolver, Root, Mutation, Ctx, Authorized } from 't
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Repository } from 'typeorm';
 
-import { Anime, AnimeInput, UpdateAnimeInput } from '../anime.type';
+import { Anime, UpdateAnimeInput, BaseAnimeInput } from '../anime.type';
 import { Character } from '../../character/character.type';
 import { Studio } from '../../studio/studio.type';
 import { Genre } from '../../genre/genre.type';
@@ -10,6 +10,7 @@ import { Genre } from '../../genre/genre.type';
 import { BaseCharacterInput } from '../../character/resolvers/types/character-input';
 import { createGenericResolver } from '../../../common/GenericResolver';
 import { IContext } from '../../../common/types/IContext';
+import { Review } from '../../reviews/reviews.type';
 
 @Resolver(() => Anime)
 export class AnimeResolver extends createGenericResolver('Anime', Anime) {
@@ -32,7 +33,21 @@ export class AnimeResolver extends createGenericResolver('Anime', Anime) {
   }
 
   @FieldResolver()
-  async genres(@Root() parent: Anime, @Ctx() context: IContext): Promise<Genre[] | undefined> {
+  async genres(@Root() parent: Anime, @Ctx() context: IContext): Promise<Genre[]> {
+    const genres = await context.loaders.animeLoaders.batchGenreByAnimeIds.load(parent.id);
+
+    return genres;
+  }
+
+  @FieldResolver()
+  async reviews(@Root() parent: Anime, @Ctx() context: IContext): Promise<Review[]> {
+    const result = await context.loaders.reviewLoaders.batchFindByAnime.load(parent.id);
+
+    return result;
+  }
+
+  @FieldResolver()
+  async tags(@Root() parent: Anime, @Ctx() context: IContext): Promise<Genre[] | undefined> {
     const genres = await context.loaders.animeLoaders.batchGenreByAnimeIds.load(parent.id);
 
     return genres;
@@ -41,7 +56,21 @@ export class AnimeResolver extends createGenericResolver('Anime', Anime) {
   @Authorized(['admin'])
   @Mutation(() => Anime)
   async createAnime(
-    @Arg('animeData') { title, desciption, studioId, genreIds }: AnimeInput,
+    @Arg('animeData')
+    {
+      englishTitle,
+      romajiTitle,
+      nativeTitle,
+      desciption,
+      bannerImage,
+      xLargeCoverImage,
+      largeCoverImage,
+      trailer,
+      popularity,
+      studioId,
+      genreIds,
+      tagIds,
+    }: BaseAnimeInput,
     @Arg('charactersData', () => [BaseCharacterInput], { nullable: true })
     charactersData?: BaseCharacterInput[]
   ): Promise<Anime> {
@@ -50,7 +79,9 @@ export class AnimeResolver extends createGenericResolver('Anime', Anime) {
     });
 
     const newAnime = this.animeRepository.create({
-      title,
+      englishTitle,
+      romajiTitle,
+      nativeTitle,
       desciption,
       studio: { id: studioId },
       genres: genreMap,

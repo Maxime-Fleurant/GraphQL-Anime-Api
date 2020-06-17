@@ -2,7 +2,6 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Service } from 'typedi';
 import DataLoader from 'dataloader';
-import _ from 'lodash';
 import { Anime } from '../anime.type';
 import { Genre } from '../../genre/genre.type';
 

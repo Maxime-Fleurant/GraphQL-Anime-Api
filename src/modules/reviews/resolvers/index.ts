@@ -13,13 +13,6 @@ export class ReviewResolver extends createGenericResolver('Review', Review) {
     super();
   }
 
-  @FieldResolver()
-  async anime(@Root() parent: Review, @Ctx() context: IContext): Promise<Anime | undefined> {
-    const anime = await context.loaders.animeLoaders.batchFindById.load(parent.animeId);
-
-    return anime;
-  }
-
   @Mutation(() => Review)
   async createReview(
     @Arg('input') { summary, score, body, animeId, userId }: CreateReviewInput
