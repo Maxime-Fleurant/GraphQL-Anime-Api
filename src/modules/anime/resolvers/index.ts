@@ -3,14 +3,14 @@ import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Repository } from 'typeorm';
 
 import { Anime, UpdateAnimeInput, BaseAnimeInput } from '../anime.type';
-import { Character } from '../../character/character.type';
+import { Character, BaseCharacterInput } from '../../character/character.type';
 import { Studio } from '../../studio/studio.type';
 import { Genre } from '../../genre/genre.type';
-
-import { BaseCharacterInput } from '../../character/resolvers/types/character-input';
 import { createGenericResolver } from '../../../common/GenericResolver';
 import { IContext } from '../../../common/types/IContext';
 import { Review } from '../../reviews/reviews.type';
+import { Tag } from '../../tag/tag.type';
+import { ExternalLink, ExternalLinkInput } from '../../externalLink/externalLink.type';
 
 @Resolver(() => Anime)
 export class AnimeResolver extends createGenericResolver('Anime', Anime) {
@@ -47,10 +47,19 @@ export class AnimeResolver extends createGenericResolver('Anime', Anime) {
   }
 
   @FieldResolver()
-  async tags(@Root() parent: Anime, @Ctx() context: IContext): Promise<Genre[] | undefined> {
-    const genres = await context.loaders.animeLoaders.batchGenreByAnimeIds.load(parent.id);
+  async externalLinks(@Root() parent: Anime, @Ctx() context: IContext): Promise<ExternalLink[]> {
+    const externalLinks = await context.loaders.externalLinkLoaders.batchGenreByAnimeIds.load(
+      parent.id
+    );
 
-    return genres;
+    return externalLinks;
+  }
+
+  @FieldResolver()
+  async tags(@Root() parent: Anime, @Ctx() context: IContext): Promise<Tag[]> {
+    const tags = await context.loaders.animeLoaders.batchTagsByAnimeIds.load(parent.id);
+
+    return tags;
   }
 
   @Authorized(['admin'])
@@ -72,20 +81,37 @@ export class AnimeResolver extends createGenericResolver('Anime', Anime) {
       tagIds,
     }: BaseAnimeInput,
     @Arg('charactersData', () => [BaseCharacterInput], { nullable: true })
-    charactersData?: BaseCharacterInput[]
+    charactersData: BaseCharacterInput[],
+    @Arg('externalLinkData', () => [ExternalLinkInput], { nullable: true })
+    externalLinkData: ExternalLinkInput[]
   ): Promise<Anime> {
-    const genreMap = genreIds.map((genreId) => {
-      return { id: genreId };
-    });
+    const genreMap = genreIds
+      ? genreIds.map((genreId) => {
+          return { id: genreId };
+        })
+      : [];
+
+    const tagMap = tagIds
+      ? tagIds.map((tagId) => {
+          return { id: tagId };
+        })
+      : [];
 
     const newAnime = this.animeRepository.create({
       englishTitle,
       romajiTitle,
       nativeTitle,
       desciption,
+      bannerImage,
+      xLargeCoverImage,
+      largeCoverImage,
+      trailer,
+      popularity,
+      tags: tagMap,
       studio: { id: studioId },
       genres: genreMap,
       characters: charactersData,
+      externalLinks: externalLinkData,
     });
 
     return this.animeRepository.save(newAnime);

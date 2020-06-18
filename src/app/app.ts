@@ -3,6 +3,7 @@ import dotEnv from 'dotenv';
 import Container, { Service } from 'typedi';
 import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
+import { getComplexity, simpleEstimator, fieldExtensionsEstimator } from 'graphql-query-complexity';
 
 import { Loaders } from './loaders';
 import { SchemaMaker } from './schema';
@@ -24,6 +25,27 @@ export class App {
 
     const apolloServer = new ApolloServer({
       schema,
+      plugins: [
+        {
+          requestDidStart: () => ({
+            didResolveOperation({ request, document }) {
+              const complexity = getComplexity({
+                schema,
+                operationName: request.operationName,
+                query: document,
+                variables: request.variables,
+                estimators: [fieldExtensionsEstimator(), simpleEstimator({ defaultComplexity: 1 })],
+              });
+
+              if (complexity > 100) {
+                throw new Error(
+                  `Sorry, too complicated query! ${complexity} is over 20 that is the max allowed complexity.`
+                );
+              }
+            },
+          }),
+        },
+      ],
       context: ({ req }) => {
         let user: Pick<User, 'id' | 'role'> | null;
 

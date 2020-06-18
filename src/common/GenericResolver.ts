@@ -7,7 +7,9 @@ export function createGenericResolver<T extends ClassType>(suffix: string, objec
   abstract class BaseResolver {
     @InjectRepository(objectTypeCls) private genericRepo: Repository<T>;
 
-    @Query(() => [objectTypeCls], { name: `${suffix}s` })
+    @Query(() => [objectTypeCls], {
+      name: `${suffix}s`,
+    })
     async getAll(): Promise<T[]> {
       return this.genericRepo.find();
     }

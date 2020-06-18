@@ -1,5 +1,5 @@
-import { ObjectType, Field, ID } from 'type-graphql';
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, OneToMany } from 'typeorm';
+import { ObjectType, Field, ID, InputType } from 'type-graphql';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Review } from '../reviews/reviews.type';
 
 @ObjectType()
@@ -22,4 +22,19 @@ export class User {
   @Field(() => [Review])
   @OneToMany(() => Review, (review) => review.user)
   reviews: Review[];
+}
+
+@ObjectType()
+export class LoginResult {
+  @Field({ nullable: true })
+  token: string;
+}
+
+@InputType()
+export class CreateUserInput {
+  @Field()
+  name: string;
+
+  @Field()
+  password: string;
 }

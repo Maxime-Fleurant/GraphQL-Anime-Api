@@ -21,9 +21,25 @@ export class ReviewLoaders {
     return formatedReview;
   };
 
+  batchFindByUser: (keys: readonly number[]) => Promise<Review[][]> = async (keys) => {
+    const reviews = await this.reviewRepo
+      .createQueryBuilder('review')
+      .where('review.user in (:...userIds)', { userIds: keys })
+      .getMany();
+
+    const formatedReview = keys.map((key) => {
+      return reviews.filter((review) => {
+        return review.userId === key;
+      });
+    });
+
+    return formatedReview;
+  };
+
   createLoaders = () => {
     return {
       batchFindByAnime: new DataLoader<number, Review[]>((keys) => this.batchFindByAnime(keys)),
+      batchFindByUser: new DataLoader<number, Review[]>((keys) => this.batchFindByUser(keys)),
     };
   };
 }

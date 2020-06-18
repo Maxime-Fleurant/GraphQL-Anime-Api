@@ -31,7 +31,6 @@ export class Review {
   @ManyToOne(() => User, (user) => user.reviews, { onDelete: 'SET NULL' })
   user: User;
 
-  @Field(() => ID)
   @RelationId((review: Review) => review.user)
   userId: number;
 }

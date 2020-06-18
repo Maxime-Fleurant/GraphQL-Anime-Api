@@ -1,20 +1,30 @@
-import { Resolver, Arg, Mutation, Query } from 'type-graphql';
+import { Resolver, Arg, Mutation, Query, FieldResolver, Root, Ctx } from 'type-graphql';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Repository } from 'typeorm';
 
-import { User } from '../user.type';
-import { CreateUserInput } from './user-input';
+import { User, LoginResult, CreateUserInput } from '../user.type';
 import { Bcrypt } from '../../../common/third-party/bcrypt';
 import { Jwt } from '../../../common/third-party/jwt';
-import { LoginResult } from './types/login';
+import { Review } from '../../reviews/reviews.type';
+import { IContext } from '../../../common/types/IContext';
+import { createGenericResolver } from '../../../common/GenericResolver';
 
 @Resolver(() => User)
-export class UserResolver {
+export class UserResolver extends createGenericResolver('User', User) {
   constructor(
     @InjectRepository(User) private userRepo: Repository<User>,
     private bcrypt: Bcrypt,
     private jwt: Jwt
-  ) {}
+  ) {
+    super();
+  }
+
+  @FieldResolver()
+  async reviews(@Root() parent: Review, @Ctx() context: IContext): Promise<Review[]> {
+    const reviews = await context.loaders.reviewLoaders.batchFindByUser.load(parent.id);
+
+    return reviews;
+  }
 
   @Query(() => LoginResult)
   async login(

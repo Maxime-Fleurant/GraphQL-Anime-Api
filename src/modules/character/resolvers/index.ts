@@ -1,9 +1,9 @@
 import { Resolver, Arg, FieldResolver, Root, Mutation, Ctx, Authorized } from 'type-graphql';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Repository } from 'typeorm';
-import { Character } from '../character.type';
+
+import { Character, CharacterInput, UpdateCharacterInput } from '../character.type';
 import { Anime } from '../../anime/anime.type';
-import { CharacterInput, UpdateCharacterInput } from './types/character-input';
 import { createGenericResolver } from '../../../common/GenericResolver';
 import { IContext } from '../../../common/types/IContext';
 

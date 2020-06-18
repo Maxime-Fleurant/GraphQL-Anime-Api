@@ -3,6 +3,7 @@ import { CharacterLoader } from '../modules/character/loaders';
 import { StudioLoader } from '../modules/studio/loaders';
 import { AnimeLoaders } from '../modules/anime/loaders';
 import { ReviewLoaders } from '../modules/reviews/loaders';
+import { ExternalLinkLoaders } from '../modules/externalLink/loaders';
 
 @Service()
 export class Loaders {
@@ -10,7 +11,8 @@ export class Loaders {
     private characterLoader: CharacterLoader,
     private studioLoader: StudioLoader,
     private animeLoaders: AnimeLoaders,
-    private reviewLoaders: ReviewLoaders
+    private reviewLoaders: ReviewLoaders,
+    private externalLinkLoaders: ExternalLinkLoaders
   ) {}
 
   createLoaders() {
@@ -19,6 +21,7 @@ export class Loaders {
       studioLoaders: this.studioLoader.createLoaders(),
       animeLoaders: this.animeLoaders.createLoaders(),
       reviewLoaders: this.reviewLoaders.createLoaders(),
+      externalLinkLoaders: this.externalLinkLoaders.createLoaders(),
     };
   }
 }

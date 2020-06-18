@@ -15,6 +15,7 @@ import { Genre } from '../genre/genre.type';
 import { Character } from '../character/character.type';
 import { Review } from '../reviews/reviews.type';
 import { Tag } from '../tag/tag.type';
+import { ExternalLink } from '../externalLink/externalLink.type';
 
 @ObjectType()
 @Entity()
@@ -74,8 +75,12 @@ export class Anime extends BaseEntity {
   @OneToMany(() => Review, (review) => review.anime, { cascade: true })
   reviews: Review[];
 
+  @Field(() => [ExternalLink], { nullable: 'items' })
+  @OneToMany(() => ExternalLink, (externalLink) => externalLink.anime, { cascade: true })
+  externalLinks: ExternalLink[];
+
   @Field(() => [Genre], { nullable: 'items' })
-  @ManyToMany(() => Genre)
+  @ManyToMany(() => Genre, (genre) => genre.animes)
   @JoinTable()
   genres: Genre[];
 
@@ -117,21 +122,42 @@ export class BaseAnimeInput {
   @Field()
   studioId: number;
 
-  @Field(() => [Number])
-  genreIds: number[];
+  @Field(() => [Number], { nullable: 'itemsAndList' })
+  genreIds?: number[];
 
-  @Field(() => [Number])
-  tagIds: number[];
+  @Field(() => [Number], { nullable: 'itemsAndList' })
+  tagIds?: number[];
 }
 
 @InputType()
 export class UpdateAnimeInput {
   @Field({ nullable: true })
-  title?: string;
+  englishTitle?: string;
+
+  @Field({ nullable: true })
+  romajiTitle?: string;
+
+  @Field({ nullable: true })
+  nativeTitle?: string;
 
   @Field({ nullable: true })
   desciption?: string;
 
   @Field({ nullable: true })
-  studioId?: number;
+  bannerImage?: string;
+
+  @Field({ nullable: true })
+  xLargeCoverImage?: string;
+
+  @Field({ nullable: true })
+  largeCoverImage?: string;
+
+  @Field({ nullable: true })
+  trailer: string;
+
+  @Field({ nullable: true })
+  popularity: number;
+
+  @Field({ nullable: true })
+  studioId: number;
 }

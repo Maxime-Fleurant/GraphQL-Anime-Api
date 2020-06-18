@@ -8,6 +8,7 @@ type Anime {
   characters: [Character]!
   desciption: String
   englishTitle: String
+  externalLinks: [ExternalLink]!
   genres: [Genre]!
   id: ID!
   largeCoverImage: String
@@ -25,13 +26,13 @@ input BaseAnimeInput {
   bannerImage: String
   desciption: String
   englishTitle: String
-  genreIds: [Float!]!
+  genreIds: [Float]
   largeCoverImage: String
   nativeTitle: String
   popularity: Float!
   romajiTitle: String
   studioId: Float!
-  tagIds: [Float!]!
+  tagIds: [Float]
   trailer: String!
   xLargeCoverImage: String
 }
@@ -67,6 +68,17 @@ input CreateUserInput {
   password: String!
 }
 
+type ExternalLink {
+  site: String!
+  url: String!
+}
+
+input ExternalLinkInput {
+  animeId: Float
+  site: String!
+  url: String!
+}
+
 type Genre {
   id: ID!
   name: String!
@@ -78,7 +90,7 @@ type LoginResult {
 
 type Mutation {
   addGenreFromAnime(animeId: Float!, genreIds: [Float!]!): Anime!
-  createAnime(animeData: BaseAnimeInput!, charactersData: [BaseCharacterInput!]): Anime!
+  createAnime(animeData: BaseAnimeInput!, charactersData: [BaseCharacterInput!], externalLinkData: [ExternalLinkInput!]): Anime!
   createCharacter(characterData: CharacterInput!): Character!
   createReview(input: CreateReviewInput!): Review!
   createStudio(studioName: String!): Studio!
@@ -87,6 +99,7 @@ type Mutation {
   deleteCharacter(id: String!): String!
   deleteReview(id: String!): String!
   deleteStudio(id: String!): String!
+  deleteUser(id: String!): String!
   removeGenreFromAnime(animeId: Float!, genreIds: [Float!]!): Anime!
   updateAnime(animeId: Float!, updateData: UpdateAnimeInput!): Anime!
   updateCharacter(characterData: UpdateCharacterInput!, characterId: Float!): Character!
@@ -103,6 +116,8 @@ type Query {
   Reviews: [Review!]!
   Studio(id: String!): Studio!
   Studios: [Studio!]!
+  User(id: String!): User!
+  Users: [User!]!
 }
 
 type Review {
@@ -110,7 +125,6 @@ type Review {
   body: String!
   id: ID!
   summary: String!
-  userId: ID!
 }
 
 type Studio {
@@ -125,9 +139,16 @@ type Tag {
 }
 
 input UpdateAnimeInput {
+  bannerImage: String
   desciption: String
+  englishTitle: String
+  largeCoverImage: String
+  nativeTitle: String
+  popularity: Float
+  romajiTitle: String
   studioId: Float
-  title: String
+  trailer: String
+  xLargeCoverImage: String
 }
 
 input UpdateCharacterInput {

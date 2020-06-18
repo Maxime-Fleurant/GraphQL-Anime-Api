@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, RelationId } from 'typeorm';
-import { ObjectType, Field, ID } from 'type-graphql';
+import { ObjectType, Field, ID, InputType } from 'type-graphql';
 import { Anime } from '../anime/anime.type';
 
 @ObjectType()
@@ -23,4 +23,28 @@ export class Character extends BaseEntity {
 
   @RelationId((character: Character) => character.anime)
   animeId: number;
+}
+
+@InputType()
+export class BaseCharacterInput {
+  @Field()
+  name: string;
+
+  @Field()
+  description: string;
+}
+
+@InputType()
+export class CharacterInput extends BaseCharacterInput {
+  @Field()
+  animeId: number;
+}
+
+@InputType()
+export class UpdateCharacterInput {
+  @Field({ nullable: true })
+  name?: string;
+
+  @Field({ nullable: true })
+  description?: string;
 }
