@@ -9,6 +9,7 @@ type Anime {
   desciption: String
   englishTitle: String
   externalLinks: [ExternalLink]!
+  format: String!
   genres: [Genre]!
   id: ID!
   largeCoverImage: String
@@ -16,6 +17,7 @@ type Anime {
   popularity: Float!
   reviews: [Review]!
   romajiTitle: String
+  status: String!
   studio: Studio!
   tags: [Tag]!
   trailer: String!
@@ -26,11 +28,13 @@ input BaseAnimeInput {
   bannerImage: String
   desciption: String
   englishTitle: String
+  format: String!
   genreIds: [Float]
   largeCoverImage: String
   nativeTitle: String
   popularity: Float!
   romajiTitle: String
+  status: String!
   studioId: Float!
   tagIds: [Float]
   trailer: String!
@@ -39,6 +43,8 @@ input BaseAnimeInput {
 
 input BaseCharacterInput {
   description: String!
+  largeImg: String!
+  mediumImg: String!
   name: String!
 }
 
@@ -46,12 +52,16 @@ type Character {
   anime: Anime!
   description: String!
   id: ID!
+  largeImg: String!
+  mediumImg: String!
   name: String!
 }
 
 input CharacterInput {
   animeId: Float!
   description: String!
+  largeImg: String!
+  mediumImg: String!
   name: String!
 }
 
@@ -114,6 +124,7 @@ type Query {
   login(name: String!, password: String!): LoginResult!
   Review(id: String!): Review!
   Reviews: [Review!]!
+  searchAnime(searchInput: SearchAnimeInput!): [Anime!]!
   Studio(id: String!): Studio!
   Studios: [Studio!]!
   User(id: String!): User!
@@ -125,6 +136,15 @@ type Review {
   body: String!
   id: ID!
   summary: String!
+}
+
+input SearchAnimeInput {
+  format: String
+  genresIn: [Float!]
+  limit: Float!
+  status: String
+  tagsIn: [Float!]
+  text: String
 }
 
 type Studio {

@@ -10,6 +10,8 @@ import {
   RelationId,
 } from 'typeorm';
 import { ObjectType, Field, ID, InputType } from 'type-graphql';
+import { Max } from 'class-validator';
+
 import { Studio } from '../studio/studio.type';
 import { Genre } from '../genre/genre.type';
 import { Character } from '../character/character.type';
@@ -55,6 +57,14 @@ export class Anime extends BaseEntity {
   @Field()
   @Column()
   trailer: string;
+
+  @Field()
+  @Column()
+  status: string;
+
+  @Field()
+  @Column()
+  format: string;
 
   @Field()
   @Column()
@@ -120,6 +130,12 @@ export class BaseAnimeInput {
   popularity: number;
 
   @Field()
+  status: string;
+
+  @Field()
+  format: string;
+
+  @Field()
   studioId: number;
 
   @Field(() => [Number], { nullable: 'itemsAndList' })
@@ -160,4 +176,26 @@ export class UpdateAnimeInput {
 
   @Field({ nullable: true })
   studioId: number;
+}
+
+@InputType()
+export class SearchAnimeInput {
+  @Field({ nullable: true })
+  text?: string;
+
+  @Field({ nullable: true })
+  status?: string;
+
+  @Field({ nullable: true })
+  format?: string;
+
+  @Field(() => [Number], { nullable: true })
+  tagsIn?: number[];
+
+  @Field(() => [Number], { nullable: true })
+  genresIn?: number[];
+
+  @Field()
+  @Max(50)
+  limit: number;
 }

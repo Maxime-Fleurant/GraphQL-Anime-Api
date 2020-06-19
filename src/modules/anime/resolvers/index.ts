@@ -1,8 +1,8 @@
-import { Resolver, Arg, FieldResolver, Root, Mutation, Ctx, Authorized } from 'type-graphql';
+import { Resolver, Arg, FieldResolver, Root, Mutation, Ctx, Authorized, Query } from 'type-graphql';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Repository } from 'typeorm';
 
-import { Anime, UpdateAnimeInput, BaseAnimeInput } from '../anime.type';
+import { Anime, UpdateAnimeInput, BaseAnimeInput, SearchAnimeInput } from '../anime.type';
 import { Character, BaseCharacterInput } from '../../character/character.type';
 import { Studio } from '../../studio/studio.type';
 import { Genre } from '../../genre/genre.type';
@@ -16,6 +16,48 @@ import { ExternalLink, ExternalLinkInput } from '../../externalLink/externalLink
 export class AnimeResolver extends createGenericResolver('Anime', Anime) {
   constructor(@InjectRepository(Anime) private animeRepository: Repository<Anime>) {
     super();
+  }
+
+  @Query(() => [Anime])
+  async searchAnime(
+    @Arg('searchInput') { text, status, format, tagsIn, genresIn, limit }: SearchAnimeInput
+  ): Promise<Anime[]> {
+    const searchResultQuery = this.animeRepository
+      .createQueryBuilder('anime')
+      .leftJoin('anime.tags', 'tag')
+      .leftJoin('anime.genres', 'genre');
+
+    if (format) {
+      searchResultQuery.andWhere('anime.format = :format', { format });
+    }
+
+    if (status) {
+      searchResultQuery.andWhere('anime.status = :status', { status });
+    }
+
+    if (tagsIn) {
+      searchResultQuery.andWhere('tag.id in (:...tagsIn)', { tagsIn });
+    }
+
+    if (genresIn) {
+      searchResultQuery.andWhere('genre.id in (:...tagsIn)', { tagsIn });
+    }
+
+    if (text) {
+      searchResultQuery.andWhere(
+        'anime.englishTitle like :text OR anime.romajiTitle like :text OR anime.nativeTitle like :text',
+        {
+          text,
+        }
+      );
+    }
+
+    const searchResult = await searchResultQuery
+      .orderBy('anime.popularity', 'DESC')
+      .limit(limit)
+      .getMany();
+
+    return searchResult;
   }
 
   @FieldResolver()
@@ -76,6 +118,8 @@ export class AnimeResolver extends createGenericResolver('Anime', Anime) {
       largeCoverImage,
       trailer,
       popularity,
+      status,
+      format,
       studioId,
       genreIds,
       tagIds,
@@ -107,6 +151,8 @@ export class AnimeResolver extends createGenericResolver('Anime', Anime) {
       largeCoverImage,
       trailer,
       popularity,
+      status,
+      format,
       tags: tagMap,
       studio: { id: studioId },
       genres: genreMap,

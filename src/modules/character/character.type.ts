@@ -14,6 +14,14 @@ export class Character extends BaseEntity {
   name: string;
 
   @Field()
+  @Column()
+  largeImg: string;
+
+  @Field()
+  @Column()
+  mediumImg: string;
+
+  @Field()
   @Column({ type: 'text' })
   description: string;
 
@@ -32,6 +40,12 @@ export class BaseCharacterInput {
 
   @Field()
   description: string;
+
+  @Field()
+  largeImg: string;
+
+  @Field()
+  mediumImg: string;
 }
 
 @InputType()
