@@ -55,6 +55,7 @@ type Character {
   largeImg: String!
   mediumImg: String!
   name: String!
+  nativeName: String!
 }
 
 input CharacterInput {
@@ -117,17 +118,17 @@ type Mutation {
 }
 
 type Query {
-  Anime(id: String!): Anime!
+  Anime(id: ID!): Anime!
   Animes: [Anime!]!
-  Character(id: String!): Character!
+  Character(id: ID!): Character!
   Characters: [Character!]!
   login(name: String!, password: String!): LoginResult!
-  Review(id: String!): Review!
+  Review(id: ID!): Review!
   Reviews: [Review!]!
   searchAnime(searchInput: SearchAnimeInput!): [Anime!]!
-  Studio(id: String!): Studio!
+  Studio(id: ID!): Studio!
   Studios: [Studio!]!
-  User(id: String!): User!
+  User(id: ID!): User!
   Users: [User!]!
 }
 

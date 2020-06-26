@@ -1,4 +1,4 @@
-import { ObjectType, Field, ID, InputType } from 'type-graphql';
+import { ObjectType, Field, InputType } from 'type-graphql';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, RelationId } from 'typeorm';
 import { Anime } from '../anime/anime.type';
 

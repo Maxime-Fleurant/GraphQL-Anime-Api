@@ -15,6 +15,10 @@ export class Character extends BaseEntity {
 
   @Field()
   @Column()
+  nativeName: string;
+
+  @Field()
+  @Column()
   largeImg: string;
 
   @Field()
