@@ -13,8 +13,8 @@ export class Character extends BaseEntity {
   @Column()
   name: string;
 
-  @Field()
-  @Column()
+  @Field({ nullable: true })
+  @Column({ nullable: true })
   nativeName: string;
 
   @Field()

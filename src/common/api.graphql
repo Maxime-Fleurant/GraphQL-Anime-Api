@@ -55,7 +55,7 @@ type Character {
   largeImg: String!
   mediumImg: String!
   name: String!
-  nativeName: String!
+  nativeName: String
 }
 
 input CharacterInput {
@@ -154,7 +154,6 @@ type Studio {
 }
 
 type Tag {
-  description: String!
   id: ID!
   name: String!
 }

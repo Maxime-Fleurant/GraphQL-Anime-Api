@@ -10,7 +10,7 @@ export class Genre extends BaseEntity {
   id: number;
 
   @Field()
-  @Column()
+  @Column({ unique: true })
   name: string;
 
   @ManyToMany(() => Anime, (anime) => anime.genres, { onDelete: 'CASCADE' })

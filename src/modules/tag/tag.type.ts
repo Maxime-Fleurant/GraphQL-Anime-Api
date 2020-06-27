@@ -11,8 +11,4 @@ export class Tag {
   @Field()
   @Column()
   name: string;
-
-  @Field()
-  @Column()
-  description: string;
 }
