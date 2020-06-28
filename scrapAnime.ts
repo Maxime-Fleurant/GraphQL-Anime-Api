@@ -6,6 +6,7 @@ import { Genre } from './src/modules/genre/genre.type';
 import { Anime } from './src/modules/anime/anime.type';
 import { Tag } from './src/modules/tag/tag.type';
 import { Character } from './src/modules/character/character.type';
+import { Studio } from './src/modules/studio/studio.type';
 
 const start = async () => {
   await createConnection();
@@ -14,6 +15,7 @@ const start = async () => {
   const tagRepo = getRepository(Tag);
   const animeRepo = getRepository(Anime);
   const characterRepo = getRepository(Character);
+  const studioRepo = getRepository(Studio);
 
   // Genre
   const genreQuery = `
@@ -78,6 +80,16 @@ const start = async () => {
           status
           format
           popularity
+          studios(isMain:true){
+            nodes{
+              name
+            }
+    
+          }
+          externalLinks{
+            site
+            url
+          }
           characters(sort:FAVOURITES_DESC){
             nodes{
               image{
@@ -115,9 +127,8 @@ const start = async () => {
   });
 
   const formatedAnimeList = _.flatten(animesList).filter(
-    (anime) => anime.trailer && anime.trailer.site === 'youtube'
+    (anime) => anime.trailer && anime.trailer.site === 'youtube' && anime.studios.nodes[0]
   );
-  console.log(formatedAnimeList.length);
 
   const tagList = formatedAnimeList.map((anime) => anime.tags);
   const flatTagList = _.flatten(tagList);
@@ -128,7 +139,17 @@ const start = async () => {
   await tagRepo.createQueryBuilder().insert().values(uniqTagList).execute();
   const dataBaseTagList = await tagRepo.find();
 
-  const savedAnimeList = bluebird.map(formatedAnimeList, async (anime, index) => {
+  const studioList = formatedAnimeList.map((anime) => anime.studios.nodes[0]);
+  const uniqStudioList = _.uniqBy(studioList, (studio) => {
+    return studio.name;
+  });
+
+  await studioRepo.createQueryBuilder().insert().values(uniqStudioList).execute();
+  const dbStudioList = await studioRepo.find();
+
+  const dbGenres = await genreRepo.find();
+
+  const savedAnimeList = await bluebird.map(formatedAnimeList, async (anime, index) => {
     const formatedTag = anime.tags.map((tag: any) => {
       return dataBaseTagList.find((dbTag) => dbTag.name === tag.name);
     });
@@ -143,10 +164,13 @@ const start = async () => {
       });
     });
 
-    const dbGenres = await genreRepo.find();
     const formatedGenre = anime.genres.map((genre: any) => {
       return dbGenres.find((dbGenre) => dbGenre.name === genre);
     });
+
+    const formatedStudio = dbStudioList.find(
+      (studio) => studio.name === anime.studios.nodes[0].name
+    );
 
     const formatedAnime = animeRepo.create({
       englishTitle: anime.title.english,
@@ -162,8 +186,9 @@ const start = async () => {
       popularity: anime.popularity,
       tags: formatedTag,
       characters: formatedCharacter,
-      studio: { id: 1 },
+      studio: formatedStudio,
       genres: formatedGenre,
+      externalLinks: anime.externalLinks,
     });
 
     await animeRepo.save(formatedAnime);
