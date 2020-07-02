@@ -20,7 +20,8 @@ export class AnimeResolver extends createGenericResolver('Anime', Anime) {
 
   @Query(() => [Anime])
   async searchAnime(
-    @Arg('searchInput') { text, status, format, tagsIn, genresIn, limit }: SearchAnimeInput
+    @Arg('searchInput')
+    { text, status, format, tagsIn, genresIn, limit, skip = 0 }: SearchAnimeInput
   ): Promise<Anime[]> {
     const searchResultQuery = this.animeRepository
       .createQueryBuilder('anime')
@@ -36,26 +37,24 @@ export class AnimeResolver extends createGenericResolver('Anime', Anime) {
     }
 
     if (tagsIn) {
-      searchResultQuery.andWhere('tag.id in (:...tagsIn)', { tagsIn });
+      searchResultQuery.andWhere('tag.name in (:...tagsIn)', { tagsIn });
     }
 
     if (genresIn) {
-      searchResultQuery.andWhere('genre.id in (:...tagsIn)', { tagsIn });
+      searchResultQuery.andWhere('genre.name in (:...genresIn)', { genresIn });
     }
 
     if (text) {
       searchResultQuery.andWhere(
-        'anime.englishTitle like :text OR anime.romajiTitle like :text OR anime.nativeTitle like :text',
+        'LOWER(anime.englishTitle) like LOWER(:text) OR LOWER(anime.romajiTitle) like LOWER(:text) OR LOWER(anime.nativeTitle) like LOWER(:text)',
         {
-          text,
+          text: `%${text}%`,
         }
       );
     }
+    searchResultQuery.orderBy('anime.popularity', 'DESC').take(limit).skip(skip);
 
-    const searchResult = await searchResultQuery
-      .orderBy('anime.popularity', 'DESC')
-      .limit(limit)
-      .getMany();
+    const searchResult = await searchResultQuery.getMany();
 
     return searchResult;
   }

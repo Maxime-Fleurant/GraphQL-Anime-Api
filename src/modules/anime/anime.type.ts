@@ -189,13 +189,16 @@ export class SearchAnimeInput {
   @Field({ nullable: true })
   format?: string;
 
-  @Field(() => [Number], { nullable: true })
-  tagsIn?: number[];
+  @Field(() => [String], { nullable: true })
+  tagsIn?: string[];
 
-  @Field(() => [Number], { nullable: true })
-  genresIn?: number[];
+  @Field(() => [String], { nullable: true })
+  genresIn?: string[];
 
   @Field()
   @Max(50)
-  limit: number;
+  limit?: number;
+
+  @Field()
+  skip?: number;
 }
