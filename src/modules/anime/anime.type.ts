@@ -54,6 +54,10 @@ export class Anime extends BaseEntity {
   @Column({ nullable: true })
   largeCoverImage?: string;
 
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  mediumCoverImage?: string;
+
   @Field()
   @Column()
   trailer: string;

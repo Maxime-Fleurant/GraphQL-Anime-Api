@@ -71,6 +71,7 @@ const start = async () => {
           coverImage {
             extraLarge
             large
+            medium
           }
           genres
           trailer{
@@ -180,6 +181,7 @@ const start = async () => {
       bannerImage: anime.bannerImage,
       xLargeCoverImage: anime.coverImage.extraLarge,
       largeCoverImage: anime.coverImage.large,
+      mediumCoverImage: anime.coverImage.medium,
       trailer: anime.trailer.id,
       status: anime.status,
       format: anime.format,

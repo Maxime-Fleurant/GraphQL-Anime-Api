@@ -13,6 +13,7 @@ type Anime {
   genres: [Genre]!
   id: ID!
   largeCoverImage: String
+  mediumCoverImage: String
   nativeTitle: String
   popularity: Float!
   reviews: [Review]!
