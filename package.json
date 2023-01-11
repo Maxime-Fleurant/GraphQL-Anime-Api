@@ -12,7 +12,7 @@
     "axios": "^0.19.2",
     "bcrypt": "^5.0.0",
     "bluebird": "^3.7.2",
-    "class-validator": "^0.12.2",
+    "class-validator": "^0.14.0",
     "dataloader": "^2.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
